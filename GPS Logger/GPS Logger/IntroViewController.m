@@ -20,10 +20,6 @@
     @property (weak, nonatomic) IBOutlet UILabel *addressTextBox;
     - (IBAction)logButton:(id)sender;
 
-    //Location of storage
-    @property (strong, nonatomic) NSString *dataFilePath;
-
-
 @end
 
 @implementation IntroViewController{
@@ -62,6 +58,7 @@
 
 - (void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
 
+    ////////////////////GET LOCATION/////////////////////
     //If there is actually a location, update the view
     if (newLocation != NULL){
         self.latitudeTextBox.text = [NSString stringWithFormat:@"%.4f", newLocation.coordinate.latitude];
@@ -78,20 +75,29 @@
         }
     }];
     
+    ////////////////////GET STORAGE PATH/////////////////////
     NSFileManager *filemgr;
-    NSString *docsDir;
     NSArray *dirPaths;
+    NSString *dataFilePath;
+    
+    //Initialize file manager
     filemgr = [NSFileManager defaultManager];
     
     // Get the documents directory
     dirPaths = NSSearchPathForDirectoriesInDomains(
-                                                   NSDocumentDirectory, NSUserDomainMask, YES);
-    
-    docsDir = dirPaths[0];
-    
+            NSDocumentDirectory, NSUserDomainMask, YES);
     // Build the path to the data file
-    _dataFilePath = [[NSString alloc] initWithString: [docsDir
-                                                       stringByAppendingPathComponent: @"data.archive"]];
+    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"data.archive"]];
+    
+    ///////////////////////STORE DATA/////////////////////
+    NSMutableArray *coordinateArray;
+    
+    coordinateArray = [[NSMutableArray alloc] init];
+    [coordinateArray addObject: newLocation];  //add coordinates
+    [coordinateArray addObject:[NSDate date]];
+
+    [NSKeyedArchiver archiveRootObject:
+     coordinateArray toFile: dataFilePath];
 
     
 }

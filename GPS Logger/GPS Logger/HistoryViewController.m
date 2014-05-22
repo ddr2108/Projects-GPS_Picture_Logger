@@ -30,13 +30,46 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    _mapView.delegate = self;
-
     //Simulated annotations on the map
     CLLocationCoordinate2D poi1Coord , poi2Coord , poi3Coord , poi4Coord;
-    //poi1 coordinates
-    poi1Coord.latitude = 37.78754;
-    poi1Coord.longitude = -122.40718;
+
+    
+    ////////////////////GET STORAGE PATH/////////////////////
+    NSFileManager *filemgr;
+    NSArray *dirPaths;
+    NSString *dataFilePath;
+    
+    //Initialize file manager
+    filemgr = [NSFileManager defaultManager];
+    
+    // Get the documents directory
+    dirPaths = NSSearchPathForDirectoriesInDomains(
+                                                   NSDocumentDirectory, NSUserDomainMask, YES);
+    // Build the path to the data file
+    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"data.archive"]];
+    
+    ///////////////////////STORE DATA/////////////////////
+    // Check if the file already exists
+    if ([filemgr fileExistsAtPath: dataFilePath])
+    {
+        NSMutableArray *dataArray;
+        
+        dataArray = [NSKeyedUnarchiver
+                     unarchiveObjectWithFile: dataFilePath];
+        
+        //poi1 coordinates
+        poi1Coord.latitude = ((CLLocation *)dataArray[0]).coordinate.latitude;
+        poi1Coord.longitude = ((CLLocation *)dataArray[0]).coordinate.longitude;
+
+
+    }
+    
+
+    
+    
+    
+    _mapView.delegate = self;
+
     //poi2 coordinates
     poi2Coord.latitude = 37.78615;
     poi2Coord.longitude = -122.41040;
