@@ -75,7 +75,7 @@
         }
     }];
     
-    ////////////////////GET STORAGE PATH/////////////////////
+    ////////////////GET STORAGE PATH/////////////////////
     NSFileManager *filemgr;
     NSArray *dirPaths;
     NSString *dataFilePath;
@@ -87,15 +87,24 @@
     dirPaths = NSSearchPathForDirectoriesInDomains(
             NSDocumentDirectory, NSUserDomainMask, YES);
     // Build the path to the data file
-    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"data.archive"]];
+    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
     
     ///////////////////////STORE DATA/////////////////////
     NSMutableArray *coordinateArray;
     
-    coordinateArray = [[NSMutableArray alloc] init];
+    // Check if the file already exists
+    if ([filemgr fileExistsAtPath: dataFilePath])
+    {
+        coordinateArray = [NSKeyedUnarchiver
+                           unarchiveObjectWithFile: dataFilePath];
+    }else{
+        //Store data to array
+        coordinateArray = [[NSMutableArray alloc] init];
+    }
     [coordinateArray addObject: newLocation];  //add coordinates
     [coordinateArray addObject:[NSDate date]];
 
+    //Stor data to archive
     [NSKeyedArchiver archiveRootObject:
      coordinateArray toFile: dataFilePath];
 

@@ -30,80 +30,67 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    //Simulated annotations on the map
-    CLLocationCoordinate2D poi1Coord , poi2Coord , poi3Coord , poi4Coord;
-
-    
-    ////////////////////GET STORAGE PATH/////////////////////
+    ////////////////GET STORAGE PATH/////////////////////
     NSFileManager *filemgr;
     NSArray *dirPaths;
     NSString *dataFilePath;
     
+    _mapView.delegate = self;
+
     //Initialize file manager
     filemgr = [NSFileManager defaultManager];
-    
     // Get the documents directory
     dirPaths = NSSearchPathForDirectoriesInDomains(
-                                                   NSDocumentDirectory, NSUserDomainMask, YES);
+        NSDocumentDirectory, NSUserDomainMask, YES);
     // Build the path to the data file
-    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"data.archive"]];
+    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
     
-    ///////////////////////STORE DATA/////////////////////
+    ///////////////////RETRIEVE DATA/////////////////////
     // Check if the file already exists
-    if ([filemgr fileExistsAtPath: dataFilePath])
-    {
-        NSMutableArray *dataArray;
+    if ([filemgr fileExistsAtPath: dataFilePath]){
         
-        dataArray = [NSKeyedUnarchiver
-                     unarchiveObjectWithFile: dataFilePath];
+        //Get the data as an array
+        NSMutableArray *coordinateArray;
+        coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
         
-        //poi1 coordinates
-        poi1Coord.latitude = ((CLLocation *)dataArray[0]).coordinate.latitude;
-        poi1Coord.longitude = ((CLLocation *)dataArray[0]).coordinate.longitude;
+        //Create a Date formatter
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
 
+        //Find number of points
+        unsigned long logCount = [coordinateArray count];
+        int numPointsDisplay = 10;
+        if (logCount<20){
+            numPointsDisplay = (int)logCount/2;
+        }
+        
+        //Arrays to hold coordinates
+        CLLocationCoordinate2D lastCoordinates[numPointsDisplay];
+        MKPointAnnotation* lastPoints[numPointsDisplay];
+        
+        //Go through the points
+        for (int i = 0; i < numPointsDisplay; i++){
+            //Create the coordinate
+            lastCoordinates[i].latitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.latitude;
+            lastCoordinates[i].longitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.longitude;
+            
+            //Create the title for the point
+            NSString *myDateString = [dateFormatter stringFromDate:(NSDate *) coordinateArray[logCount - 2*i - 1]];
+            
+            //Create the point
+            lastPoints[i] = [[MKPointAnnotation alloc] init];
+            lastPoints[i].coordinate = lastCoordinates[i];
+            lastPoints[i].title = myDateString;
+         
+            //Print point on map
+            [_mapView addAnnotation:lastPoints[i]];
+
+        }
 
     }
     
 
-    
-    
-    
-    _mapView.delegate = self;
-
-    //poi2 coordinates
-    poi2Coord.latitude = 37.78615;
-    poi2Coord.longitude = -122.41040;
-    //poi3 coordinates
-    poi3Coord.latitude = 37.78472;
-    poi3Coord.longitude = -122.40516;
-    //poi4 coordinates
-    poi4Coord.latitude = 37.78866;
-    poi4Coord.longitude = -122.40623;
-    
-    MKPointAnnotation *poi1 = [[MKPointAnnotation alloc] init];
-    MKPointAnnotation *poi2 = [[MKPointAnnotation alloc] init];
-    MKPointAnnotation *poi3 = [[MKPointAnnotation alloc] init];
-    MKPointAnnotation *poi4 = [[MKPointAnnotation alloc] init];
-    
-    
-    poi1.coordinate = poi1Coord;
-    poi2.coordinate = poi2Coord;
-    poi3.coordinate = poi3Coord;
-    poi4.coordinate = poi4Coord;
-    
-    poi1.title = @"McDonald's";
-    poi1.subtitle = @"Best burgers in town";
-    poi2.title = @"Apple store";
-    poi2.subtitle = @"Iphone on sales..";
-    poi3.title = @"Microsoft";
-    poi3.subtitle = @"Microsoft's headquarters";
-    poi4.title = @"Post office";
-    poi4.subtitle = @"You got mail!";
-    
-    [_mapView addAnnotation:poi1];
-    [_mapView addAnnotation:poi2];
-    [_mapView addAnnotation:poi3];
-    [_mapView addAnnotation:poi4];
 
     
 }
@@ -114,15 +101,5 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end
