@@ -93,6 +93,7 @@
                         <outlet property="addressTextBox" destination="ezb-x8-aDp" id="PdW-Qj-6nE"/>
                         <outlet property="latitudeTextBox" destination="tLM-rZ-ahl" id="hnv-ob-7PD"/>
                         <outlet property="longitudeTextBox" destination="Eis-nW-zbW" id="hwe-CQ-rhk"/>
+                        <outlet property="mapView" destination="VeO-AL-IYY" id="vij-eQ-DX0"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qh2-T1-AhA" sceneMemberID="firstResponder"/>

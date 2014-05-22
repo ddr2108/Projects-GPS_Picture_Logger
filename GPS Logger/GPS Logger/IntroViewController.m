@@ -20,6 +20,9 @@
     @property (weak, nonatomic) IBOutlet UILabel *addressTextBox;
     - (IBAction)logButton:(id)sender;
 
+    @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+
+
 @end
 
 @implementation IntroViewController{
@@ -51,6 +54,12 @@
     manager.delegate = self;
     manager.desiredAccuracy = kCLLocationAccuracyBest;
     [manager startUpdatingLocation];
+    
+    //Center the map
+    _mapView.userTrackingMode=YES;
+
+    //[_mapView setCenter:_mapView.userLocation.coordinate animated:YES];
+
     
 }
 
@@ -84,29 +93,27 @@
     filemgr = [NSFileManager defaultManager];
     
     // Get the documents directory
-    dirPaths = NSSearchPathForDirectoriesInDomains(
-            NSDocumentDirectory, NSUserDomainMask, YES);
+    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     // Build the path to the data file
     dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
     
     ///////////////////////STORE DATA/////////////////////
     NSMutableArray *coordinateArray;
     
-    // Check if the file already exists
-    if ([filemgr fileExistsAtPath: dataFilePath])
-    {
-        coordinateArray = [NSKeyedUnarchiver
-                           unarchiveObjectWithFile: dataFilePath];
+    // Check if the file already exists, and pull form it if it does
+    if ([filemgr fileExistsAtPath: dataFilePath]){
+        coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
     }else{
         //Store data to array
         coordinateArray = [[NSMutableArray alloc] init];
     }
-    [coordinateArray addObject: newLocation];  //add coordinates
+    
+    //Add information from this logging
+    [coordinateArray addObject: newLocation];
     [coordinateArray addObject:[NSDate date]];
 
     //Stor data to archive
-    [NSKeyedArchiver archiveRootObject:
-     coordinateArray toFile: dataFilePath];
+    [NSKeyedArchiver archiveRootObject:coordinateArray toFile: dataFilePath];
 
     
 }

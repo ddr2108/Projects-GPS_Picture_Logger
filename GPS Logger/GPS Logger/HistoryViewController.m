@@ -10,8 +10,7 @@
 #import "HistoryViewController.h"
 
 @interface HistoryViewController () <MKMapViewDelegate>
-@property (weak, nonatomic) IBOutlet MKMapView *mapView;
-
+    @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @end
 
 @implementation HistoryViewController
@@ -90,8 +89,8 @@
 
     }
     
-
-
+    //Fix up map to center it
+    [_mapView showAnnotations:[_mapView annotations] animated:YES];
     
 }
 
