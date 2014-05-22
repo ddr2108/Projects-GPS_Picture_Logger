@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E567F32192D74940028BE0D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E567F31192D74940028BE0D /* CoreLocation.framework */; };
 		6EF01BF9192701EE0062EA0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BF8192701EE0062EA0F /* Foundation.framework */; };
 		6EF01BFB192701EE0062EA0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BFA192701EE0062EA0F /* CoreGraphics.framework */; };
 		6EF01BFD192701EE0062EA0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BFC192701EE0062EA0F /* UIKit.framework */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6E567F31192D74940028BE0D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		6EF01BF5192701EE0062EA0F /* GPS Logger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GPS Logger.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EF01BF8192701EE0062EA0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6EF01BFA192701EE0062EA0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -68,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E567F32192D74940028BE0D /* CoreLocation.framework in Frameworks */,
 				6EF01BFB192701EE0062EA0F /* CoreGraphics.framework in Frameworks */,
 				6EF01BFD192701EE0062EA0F /* UIKit.framework in Frameworks */,
 				6EF01C31192702FA0062EA0F /* MapKit.framework in Frameworks */,
@@ -110,6 +113,7 @@
 		6EF01BF7192701EE0062EA0F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6E567F31192D74940028BE0D /* CoreLocation.framework */,
 				6EF01C30192702FA0062EA0F /* MapKit.framework */,
 				6EF01BF8192701EE0062EA0F /* Foundation.framework */,
 				6EF01BFA192701EE0062EA0F /* CoreGraphics.framework */,
