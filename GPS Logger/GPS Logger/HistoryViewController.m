@@ -28,6 +28,20 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    
+    int numPointsHistory = 10;
+    
+    ///////////////GET USER DEFAULTS////////////////////
+    //get the defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString* points = [defaults objectForKey:@"points"];
+
+    if (points!=NULL){
+        numPointsHistory = [points intValue];
+    }
     
     ////////////////GET STORAGE PATH/////////////////////
     NSFileManager *filemgr;
@@ -59,8 +73,8 @@
 
         //Find number of points
         unsigned long logCount = [coordinateArray count];
-        int numPointsDisplay = 10;
-        if (logCount<20){
+        int numPointsDisplay = numPointsHistory;
+        if (logCount<numPointsHistory*2){
             numPointsDisplay = (int)logCount/2;
         }
         
@@ -93,6 +107,7 @@
     [_mapView showAnnotations:[_mapView annotations] animated:YES];
     
 }
+
 
 - (void)didReceiveMemoryWarning
 {

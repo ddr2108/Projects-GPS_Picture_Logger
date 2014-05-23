@@ -22,13 +22,14 @@
 
     @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
-
 @end
 
 @implementation IntroViewController{
     CLLocationManager *manager;
     CLGeocoder *geocoder;
     CLPlacemark *placemark;
+    
+    int logFlag;
 }
 
 - (void)viewDidLoad
@@ -39,6 +40,8 @@
     //Initialize the location structures
     manager = [[CLLocationManager alloc] init];
     geocoder = [[CLGeocoder alloc] init];
+    
+    logFlag = 0;
 
 
 }
@@ -58,8 +61,8 @@
     //Center the map
     _mapView.userTrackingMode=YES;
 
-    //[_mapView setCenter:_mapView.userLocation.coordinate animated:YES];
-
+    //Mark to log
+    logFlag = 1;
     
 }
 
@@ -67,6 +70,12 @@
 
 - (void) locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation{
 
+    //CHeck if it should record new data point
+    if (logFlag == 0){
+        return;
+    }
+    logFlag = 0;
+    
     ////////////////////GET LOCATION/////////////////////
     //If there is actually a location, update the view
     if (newLocation != NULL){
