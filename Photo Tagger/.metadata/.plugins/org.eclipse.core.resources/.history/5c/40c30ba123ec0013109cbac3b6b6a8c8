@@ -1,0 +1,42 @@
+import javax.swing.*;
+
+// Name Panel for GUI
+@SuppressWarnings("serial")
+public class userName extends JPanel{
+
+	private String name; 
+	
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public userName(){
+		//Label stating this is name edit box
+		JLabel nameLabel = new JLabel("Name:");
+		
+		//Add to panel
+		this.add(nameLabel);
+	}
+	
+	/*
+	* getName()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - name of user
+	* 
+	* returns the name
+	*/
+	public String getName(){
+		//return the name
+		return name;
+	}
+	
+}

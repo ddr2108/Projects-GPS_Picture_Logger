@@ -1,0 +1,46 @@
+import javax.swing.*;
+
+// Name Panel for GUI
+@SuppressWarnings("serial")
+public class timeInterval extends JPanel{
+
+	private int name; 
+	
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public time(){
+		//Label stating this is name text field
+		JLabel userNameLabel = new JLabel("User Name:");
+		//Text Field
+		JTextField userNameTextField = new JTextField(25);
+			
+		
+		//Add to panel
+		this.add(userNameLabel);
+		this.add(userNameTextField);
+	}
+	
+	/*
+	* getTime()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	int - time interval to use
+	* 
+	* returns the time interval
+	*/
+	public int getTime(){
+		//return the name
+		return name;
+	}
+	
+}

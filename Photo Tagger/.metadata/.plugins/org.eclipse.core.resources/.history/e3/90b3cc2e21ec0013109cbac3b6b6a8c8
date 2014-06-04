@@ -1,0 +1,24 @@
+import javax.swing.*;
+
+public class name extends JPanel{
+
+	public name(){
+		
+	}
+	
+	/*
+	* getName()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - name of user
+	* 
+	* returns the device name
+	*/
+	public String getName(){
+		
+		return "ad";
+	}
+	
+}

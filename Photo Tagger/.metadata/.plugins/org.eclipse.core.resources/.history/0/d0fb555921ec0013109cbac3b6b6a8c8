@@ -1,0 +1,37 @@
+import javax.swing.*;
+
+//Device Name Panel for GUI
+public class deviceName extends JPanel{
+
+	private String name;
+	
+	/*
+	* deviceName()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public deviceName(){
+		
+	}
+	
+	/*
+	* getDeviceName()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - name of device
+	* 
+	* returns the device name
+	*/
+	public String getDeviceName(){
+		
+		return "ad";
+	}
+
+}

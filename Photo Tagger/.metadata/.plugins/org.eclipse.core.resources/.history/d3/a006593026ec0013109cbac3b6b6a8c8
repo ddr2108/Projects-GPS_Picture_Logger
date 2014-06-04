@@ -1,0 +1,76 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+// Name Panel for GUI
+@SuppressWarnings("serial")
+public class directory extends JPanel implements ActionListener{
+
+	private String name; 
+	
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public directory(){
+		//Set up disk location
+		JPanel diskPanel = new JPanel();
+		JLabel diskLabel = new JLabel("Disk Location:");
+		JButton dirButton = new JButton("Directory");
+		final JLabel dirLabel = new JLabel(new java.io.File(".").getAbsolutePath());
+		//Set up action listeners
+		dirButton.addActionListener(this);
+		
+		//Add to panel
+		this.add(diskLabel);
+		this.add(dirButton);
+		this.add(dirLabel);
+	}
+	
+	/*
+	* getName()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - name of user
+	* 
+	* returns the name
+	*/
+	public String getName(){
+		//return the name
+		return name;
+	}
+
+	@Override
+	/*
+	* actionPerformed()
+	*
+	* parameters: 
+	* 	ActionEvent arg0 - default args
+	* returns: 
+	* 	none
+	* 
+	* creates and saves the chosen directory info
+	*/
+	public void actionPerformed(ActionEvent arg0) {
+    	//Create a file Chooser
+    	JFileChooser dirChooser = new JFileChooser();
+    	dirChooser.setCurrentDirectory(new java.io.File(dirLabel.getText()));
+    	dirChooser.setDialogTitle("Choose Directory");
+    	dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    	dirChooser.setAcceptAllFileFilterUsed(false);
+    	dirChooser.showOpenDialog(this);
+    	//Get the direcotry and save it
+    	dirLabel.setText(dirChooser.getSelectedFile().getAbsolutePath());
+
+	}
+	
+}
