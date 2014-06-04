@@ -1,0 +1,13 @@
+
+public class deviceName {
+
+	public deviceName(){
+		
+	}
+	
+	public String getDeviceName(){
+		
+		return "ad";
+	}
+
+}

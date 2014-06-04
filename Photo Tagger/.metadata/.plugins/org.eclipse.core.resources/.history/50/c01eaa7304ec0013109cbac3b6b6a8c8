@@ -1,0 +1,65 @@
+
+//Imports are listed in full to show what's being used
+//could just import javax.swing.* and java.awt.* etc..
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class PhotoTaggerGUI {
+	
+	public static void main(String[] args) {    
+        new PhotoTaggerGUI();
+    }
+
+	public PhotoTaggerGUI(){
+        
+		//Set up frame
+		JFrame guiFrame = new JFrame();
+		guiFrame.setTitle("Photo Tagger");
+		guiFrame.setSize(400, 400);
+		guiFrame.setLocationRelativeTo(null);
+		guiFrame.setLayout(new FlowLayout());
+		
+		//Set up disk location
+		JPanel diskPanel = new JPanel();
+		JLabel diskLabel = new JLabel("Disk Location:");
+		diskPanel.add(diskLabel);
+		
+		//Set up  name
+		JPanel namePanel = new JPanel();
+		JLabel nameLabel = new JLabel("Name:");
+		
+		//Set up device name
+		JPanel deviceNamePanel = new JPanel();
+		JLabel deviceNameLabel = new JLabel("Device Name:");
+
+		//Set up time interval
+		JPanel timePanel = new JPanel();
+		JLabel timeLabel = new JLabel("Time Interval:");
+
+		//Set up start button
+		JPanel startPanel = new JPanel();
+		JButton startButton = new JButton("Start");
+		
+		//Set up frame
+		guiFrame.add( diskPanel);
+		guiFrame.add(nameLabel);
+		guiFrame.add(deviceNameLabel);
+		guiFrame.add(timeLabel);
+		guiFrame.add(startButton);
+
+		
+		//make sure the JFrame is visible
+        guiFrame.setVisible(true);
+	
+	}
+
+}

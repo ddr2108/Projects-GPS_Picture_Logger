@@ -1,0 +1,45 @@
+
+//Imports are listed in full to show what's being used
+//could just import javax.swing.* and java.awt.* etc..
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class PhotoTaggerGUI {
+	
+	public static void main(String[] args) {    
+        new PhotoTaggerGUI();
+    }
+
+	public PhotoTaggerGUI(){
+        
+		JFrame guiFrame = new JFrame();
+		
+		//Set up frame
+		guiFrame.setTitle("Photo Tagger");
+		guiFrame.setSize(400, 400);
+		guiFrame.setLocationRelativeTo(null);
+		
+		//Set up disk location
+
+		
+		//Set up  name
+		
+		
+		//Set up device name
+		
+		
+		//Set up disk location
+		
+		//make sure the JFrame is visible
+        guiFrame.setVisible(true);
+	
+	}
+
+}

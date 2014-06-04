@@ -1,0 +1,9 @@
+
+public class deviceName {
+
+	public String getDeviceName(){
+		
+		return "ad";
+	}
+
+}
