@@ -1,4 +1,4 @@
-?php
+<?php
 
 //Get data
 $userName = $_GET['userName'];
@@ -8,15 +8,6 @@ $hour = $_GET['hour'];
 $minute =  $_GET['minute'];
 $longitude = $_GET['longitude'];
 $latitude = $_GET["latitude"];
-
-//Print data for confirmation
-echo $userName;
-echo $deviceName;
-echo $date;
-echo $hour;
-echo $minute;
-echo $longitude;
-echo $latitude;
 
 //Open connection with db
 $con=mysqli_connect("localhost","deep","siddhartha","GPS_Logger");
