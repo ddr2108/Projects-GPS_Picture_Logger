@@ -4,8 +4,7 @@
 $userName = $_GET['userName'];
 $deviceName = $_GET['deviceName'];
 $date = $_GET['date'];
-$hour = $_GET['hour'];
-$minute =  $_GET['minute'];
+$time = $_GET['time'];
 $longitude = $_GET['longitude'];
 $latitude = $_GET["latitude"];
 
@@ -16,12 +15,10 @@ if (mysqli_connect_errno()) {
 }
 
 //Insert into db
-mysqli_query($con,"INSERT INTO GPS_Data (userName, deviceName, date, hour, minute, longitude, latitude) VALUES ('$userName', '$deviceName', '$date', '$hour', '$minute', '$longitude', '$latitude')");
+mysqli_query($con,"INSERT INTO GPS_Data (userName, deviceName, date, time, longitude, latitude) VALUES ('$userName', '$deviceName', '$date', '$time', '$longitude', '$latitude')");
 
 
 //Close connection
 mysqli_close($con);
 
 ?>
-
-//http://deepdattaroy.com/other/projects/GPS%20Logger/save_gps.php?userName=deep&deviceName=iPhone&date=6-6-2014&hour=3&minute=3&longitude=5&latitude=9
