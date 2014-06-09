@@ -55,5 +55,3 @@ echo $longitude . "= "  . $latitude;
 mysqli_close($con);
 
 ?>
-
-//http://deepdattaroy.com/other/projects/GPS%20Logger/get_gps.php?userName=deep&deviceName=Deep-iPhone&date=6-7-2014&time=942&deltaTime=20

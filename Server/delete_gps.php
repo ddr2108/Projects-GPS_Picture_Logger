@@ -18,5 +18,3 @@ mysqli_query($con,"DELETE FROM GPS_Data WHERE userName='$userName' AND deviceNam
 mysqli_close($con);
 
 ?>
-
-//http://deepdattaroy.com/other/projects/GPS%20Logger/delete_gps.php?userName=deep&deviceName=iPhone
