@@ -141,6 +141,73 @@
 
     //if data was inserted, try to insert other items
     if (dataInserted==TRUE){
+        ////////////////GET STORAGE PATH/////////////////////
+        NSFileManager *filemgr;
+        NSArray *dirPaths;
+        NSString *dataFilePath;
+        
+        //Initialize file manager
+        filemgr = [NSFileManager defaultManager];
+        
+        // Get the documents directory
+        dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        // Build the path to the data file
+        dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
+        
+        ///////////////////////GET DATA/////////////////////
+        NSMutableArray *coordinateArray;
+        
+        // Check if the file already exists, and pull form it if it does
+        if ([filemgr fileExistsAtPath: dataFilePath]){
+            coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
+        }
+        
+///
+        
+        //Find number of points
+        unsigned long logCount = [coordinateArray count];
+        if (logCount==0){
+            return;
+        }
+        
+        //Get previous date
+        NSDateFormatter *dateFormatterDate = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"MM-d-YYYY"];
+        unsigned units = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit;
+        NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+        //Go through the points
+        for (int i = 0; i < (logCount)/2; i++){
+            double latitude = ((CLLocation *)coordinateArray[2*i]).coordinate.latitude;
+            double longitude = ((CLLocation *)coordinateArray[2*i]).coordinate.longitude;
+
+            NSDate* loggedDate = (NSDate*) coordinateArray[2*i+1];
+            NSDateComponents *dateComponents = [calendar components:units fromDate:loggedDate];
+            NSInteger time = [dateComponents hour]*60+[dateComponents minute];
+            NSString *loggedDateString = [dateFormatter stringFromDate:loggedDate];
+            
+            NSString *requestString = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/save_gps.php?userName=%@&deviceName=%@&date=%@&time=%ld&longitude=%f&latitude=%f",
+                                       userName,
+                                       deviceName,
+                                       loggedDateString,
+                                       (long)time,
+                                       longitude,
+                                       latitude];
+            
+            NSURL *url = [NSURL URLWithString:requestString];
+            NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                                   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                               timeoutInterval:10];
+            
+            [request setHTTPMethod: @"GET"];
+            
+            NSError *requestError;
+            NSURLResponse *urlResponse = nil;
+            NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+
+            //Stor data to archive
+            //[NSKeyedArchiver archiveRootObject:coordinateArray toFile: dataFilePath];
+        }
         
         //if all successful, update sync time
         NSString *date = [NSString stringWithFormat:@"%ld:%ld %ld-%ld-%ld", [dateComponents hour], [dateComponents minute], (long)[dateComponents month], [dateComponents day], (long)[dateComponents year]];
