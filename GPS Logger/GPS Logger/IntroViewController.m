@@ -1,5 +1,5 @@
 //
-//  FirstViewController.m
+//  IntroViewController
 //  GPS Logger
 //
 //  Created by Deep Datta Roy on 5/16/14.
@@ -15,9 +15,10 @@
 @interface IntroViewController () <CLLocationManagerDelegate, MKMapViewDelegate>
 
     //Interaction with interface
-    @property (weak, nonatomic) IBOutlet UILabel *latitudeTextBox;
-    @property (weak, nonatomic) IBOutlet UILabel *longitudeTextBox;
-    @property (weak, nonatomic) IBOutlet UILabel *addressTextBox;
+    @property (weak, nonatomic) IBOutlet UILabel *latitudeLabel;
+    @property (weak, nonatomic) IBOutlet UILabel *longitudeLabel;
+    @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
+    @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
     - (IBAction)logButton:(id)sender;
 
     @property (weak, nonatomic) IBOutlet MKMapView *mapView;
@@ -77,10 +78,15 @@
     logFlag = 0;
     
     ////////////////////GET LOCATION/////////////////////
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"h:mm a"];
+
+    
     //If there is actually a location, update the view
     if (newLocation != NULL){
-        self.latitudeTextBox.text = [NSString stringWithFormat:@"%.4f", newLocation.coordinate.latitude];
-        self.longitudeTextBox.text = [NSString stringWithFormat:@"%.4f", newLocation.coordinate.longitude];
+        self.latitudeLabel.text = [NSString stringWithFormat:@"%.4f", newLocation.coordinate.latitude];
+        self.longitudeLabel.text = [NSString stringWithFormat:@"%.4f", newLocation.coordinate.longitude];
+        self.timeLabel.text = [dateFormatter stringFromDate:[NSDate date]];
     }
     
     //Try to reverse the coordinates to get address
@@ -88,42 +94,93 @@
         if (error == NULL && [placemarks count] > 0){
             placemark = [placemarks lastObject];
             
-            self.addressTextBox.text = [NSString stringWithFormat:@"%@\n%@ %@\n",placemark.thoroughfare, placemark.locality, placemark.postalCode];
+            self.addressLabel.text = [NSString stringWithFormat:@"%@\n%@ %@\n",placemark.thoroughfare, placemark.locality, placemark.postalCode];
             
         }
     }];
     
-    ////////////////GET STORAGE PATH/////////////////////
-    NSFileManager *filemgr;
-    NSArray *dirPaths;
-    NSString *dataFilePath;
+    /////////////////////////SEND TO SERVER///////////////////
+    //Get user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    //Initialize file manager
-    filemgr = [NSFileManager defaultManager];
+    //Get parts of date
+    NSDate *currentDate = [NSDate date];
+    unsigned units = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit;
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [calendar components:units fromDate:currentDate];
+
+    //Get things need to send to db
+    NSString *userName = [defaults objectForKey:@"userName"];
+    NSString *deviceName = [defaults objectForKey:@"deviceName"];
+    NSString *date = [NSString stringWithFormat:@"%ld-%ld-%ld", (long)[dateComponents month], [dateComponents day], (long)[dateComponents year]];
+    NSInteger time = [dateComponents hour]*60+[dateComponents minute];
+    double longitude = newLocation.coordinate.longitude;
+    double latitude = newLocation.coordinate.latitude;
+
+    //Create the request url and submit
+    NSString *requestString = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/save_gps.php?userName=%@&deviceName=%@&date=%@&time=%ld&longitude=%f&latitude=%f",
+                            userName,
+                            deviceName,
+                            date,
+                            (long)time,
+                            longitude,
+                            latitude];
     
-    // Get the documents directory
-    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    // Build the path to the data file
-    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
+    NSURL *url = [NSURL URLWithString:requestString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                        cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                        timeoutInterval:10];
+
+    [request setHTTPMethod: @"GET"];
     
-    ///////////////////////STORE DATA/////////////////////
-    NSMutableArray *coordinateArray;
+    NSError *requestError;
+    NSURLResponse *urlResponse = nil;
+    NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
     
-    // Check if the file already exists, and pull form it if it does
-    if ([filemgr fileExistsAtPath: dataFilePath]){
-        coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
-    }else{
-        //Store data to array
-        coordinateArray = [[NSMutableArray alloc] init];
+    BOOL dataInserted = [[[NSString alloc] initWithData:respData encoding:NSUTF8StringEncoding] isEqualToString:@"Inserted"];
+
+    //if data was inserted, try to insert other items
+    if (dataInserted==TRUE){
+        
+        //if all successful, update sync time
+        NSString *date = [NSString stringWithFormat:@"%ld:%ld %ld-%ld-%ld", [dateComponents hour], [dateComponents minute], (long)[dateComponents month], [dateComponents day], (long)[dateComponents year]];
+        [defaults setObject:date forKey:@"syncTime"];
     }
     
-    //Add information from this logging
-    [coordinateArray addObject: newLocation];
-    [coordinateArray addObject:[NSDate date]];
+    //If not inserted save data locally
+    if (dataInserted==FALSE){
+        ////////////////GET STORAGE PATH/////////////////////
+        NSFileManager *filemgr;
+        NSArray *dirPaths;
+        NSString *dataFilePath;
+        
+        //Initialize file manager
+        filemgr = [NSFileManager defaultManager];
+        
+        // Get the documents directory
+        dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        // Build the path to the data file
+        dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
+        
+        ///////////////////////STORE DATA/////////////////////
+        NSMutableArray *coordinateArray;
+        
+        // Check if the file already exists, and pull form it if it does
+        if ([filemgr fileExistsAtPath: dataFilePath]){
+            coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
+        }else{
+            //Store data to array
+            coordinateArray = [[NSMutableArray alloc] init];
+        }
+        
+        
+        //Add information from this logging
+        [coordinateArray addObject: newLocation];
+        [coordinateArray addObject: currentDate];
+        
+        //Stor data to archive
+        [NSKeyedArchiver archiveRootObject:coordinateArray toFile: dataFilePath];
+    }
 
-    //Stor data to archive
-    [NSKeyedArchiver archiveRootObject:coordinateArray toFile: dataFilePath];
-
-    
 }
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E567F32192D74940028BE0D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E567F31192D74940028BE0D /* CoreLocation.framework */; };
+		6E567F381930E0CF0028BE0D /* LocationUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E567F361930E0CF0028BE0D /* LocationUtil.cpp */; };
 		6EF01BF9192701EE0062EA0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BF8192701EE0062EA0F /* Foundation.framework */; };
 		6EF01BFB192701EE0062EA0F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BFA192701EE0062EA0F /* CoreGraphics.framework */; };
 		6EF01BFD192701EE0062EA0F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BFC192701EE0062EA0F /* UIKit.framework */; };
@@ -39,6 +40,8 @@
 
 /* Begin PBXFileReference section */
 		6E567F31192D74940028BE0D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		6E567F361930E0CF0028BE0D /* LocationUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocationUtil.cpp; sourceTree = "<group>"; };
+		6E567F371930E0CF0028BE0D /* LocationUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationUtil.h; sourceTree = "<group>"; };
 		6EF01BF5192701EE0062EA0F /* GPS Logger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GPS Logger.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EF01BF8192701EE0062EA0F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6EF01BFA192701EE0062EA0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -165,6 +168,8 @@
 			isa = PBXGroup;
 			children = (
 				6EF01C22192701EE0062EA0F /* GPS LoggerTests-Info.plist */,
+				6E567F361930E0CF0028BE0D /* LocationUtil.cpp */,
+				6E567F371930E0CF0028BE0D /* LocationUtil.h */,
 				6EF01C23192701EE0062EA0F /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -287,6 +292,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E567F381930E0CF0028BE0D /* LocationUtil.cpp in Sources */,
 				6EF01C27192701EE0062EA0F /* GPS_LoggerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

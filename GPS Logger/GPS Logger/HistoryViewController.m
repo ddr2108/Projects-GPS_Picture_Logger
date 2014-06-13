@@ -32,15 +32,19 @@
 
 - (void)viewDidAppear:(BOOL)animated{
     
-    int numPointsHistory = 10;
+
+    int numDaysHistory = 10;
+
+    ///////////////CLEAR CURRENT MAP/////////////////////
+    [_mapView removeAnnotations:_mapView.annotations];
     
     ///////////////GET USER DEFAULTS////////////////////
     //get the defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString* points = [defaults objectForKey:@"points"];
+    NSString* days = [defaults objectForKey:@"days"];
 
-    if (points!=NULL){
-        numPointsHistory = [points intValue];
+    if (days!=NULL){
+        numDaysHistory = [days intValue];
     }
     
     ////////////////GET STORAGE PATH/////////////////////
@@ -54,11 +58,11 @@
     filemgr = [NSFileManager defaultManager];
     // Get the documents directory
     dirPaths = NSSearchPathForDirectoriesInDomains(
-        NSDocumentDirectory, NSUserDomainMask, YES);
+    NSDocumentDirectory, NSUserDomainMask, YES);
     // Build the path to the data file
     dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
     
-    ///////////////////RETRIEVE DATA/////////////////////
+    ///////////////////RETRIEVE DATA FROM LOG/////////////////////
     // Check if the file already exists
     if ([filemgr fileExistsAtPath: dataFilePath]){
         
@@ -67,44 +71,121 @@
         coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
         
         //Create a Date formatter
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-        [dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+        NSDateFormatter *dateFormatterLong = [[NSDateFormatter alloc] init];
+        [dateFormatterLong setDateStyle:NSDateFormatterMediumStyle];
+        [dateFormatterLong setTimeStyle:NSDateFormatterMediumStyle];
 
         //Find number of points
         unsigned long logCount = [coordinateArray count];
-        int numPointsDisplay = numPointsHistory;
-        if (logCount<numPointsHistory*2){
-            numPointsDisplay = (int)logCount/2;
+        if (logCount==0){
+            return;
         }
         
-        //Arrays to hold coordinates
-        CLLocationCoordinate2D lastCoordinates[numPointsDisplay];
-        MKPointAnnotation* lastPoints[numPointsDisplay];
+        //Get previous date
+        NSDate *now = [NSDate date];
+        NSDateFormatter *dateFormatterShort = [[NSDateFormatter alloc] init];
+        [dateFormatterShort setDateFormat:@"MM-d-YYYY"];
+        NSString* possibleDates [numDaysHistory];
+        for (int i = 0; i < numDaysHistory; i++){
+            NSDate *prevDate = [now dateByAddingTimeInterval:-60*60*24*i];
+            possibleDates[i] = [dateFormatterShort stringFromDate:prevDate];
+            
+        }
+
         
+        //Arrays to hold coordinates
+        CLLocationCoordinate2D lastCoordinates;
+        MKPointAnnotation* lastPoints;
+        
+        BOOL dateMatch = FALSE;
         //Go through the points
-        for (int i = 0; i < numPointsDisplay; i++){
-            //Create the coordinate
-            lastCoordinates[i].latitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.latitude;
-            lastCoordinates[i].longitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.longitude;
+        for (int i = 0; i < (logCount)/2; i++){
+           dateMatch = FALSE;
             
             //Create the title for the point
-            NSString *myDateString = [dateFormatter stringFromDate:(NSDate *) coordinateArray[logCount - 2*i - 1]];
+            NSString *myDateString = [dateFormatterLong stringFromDate:(NSDate *) coordinateArray[logCount - 2*i - 1]];
+            NSString *myDateStringShort = [dateFormatterShort stringFromDate:(NSDate *) coordinateArray[logCount - 2*i - 1]];
+
+            //Check if this date falls into range
+            for (int i = 0; i < numDaysHistory; i++){
+                if ([possibleDates[i] isEqualToString:myDateStringShort]){
+                    dateMatch = TRUE;
+                    break;
+                }
+            }
+            if (dateMatch==FALSE){
+                break;
+            }
+            
+            //Create the coordinate
+            lastCoordinates.latitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.latitude;
+            lastCoordinates.longitude = ((CLLocation *)coordinateArray[logCount - 2*i - 2]).coordinate.longitude;
             
             //Create the point
-            lastPoints[i] = [[MKPointAnnotation alloc] init];
-            lastPoints[i].coordinate = lastCoordinates[i];
-            lastPoints[i].title = myDateString;
+            lastPoints = [[MKPointAnnotation alloc] init];
+            lastPoints.coordinate = lastCoordinates;
+            lastPoints.title = myDateString;
          
             //Print point on map
-            [_mapView addAnnotation:lastPoints[i]];
+            [_mapView addAnnotation:lastPoints];
 
         }
 
     }
     
+    /////////////GET DATA FROM SERVER////////////////////////////
+    NSString *userName = [defaults objectForKey:@"userName"];
+    NSString *deviceName = [defaults objectForKey:@"deviceName"];
+    //Get date
+    NSDate *currentDate = [NSDate date];
+    unsigned units = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit;
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSDateComponents *dateComponents = [calendar components:units fromDate:currentDate];
+    NSString *date = [NSString stringWithFormat:@"%ld-%ld-%ld", (long)[dateComponents month], [dateComponents day], (long)[dateComponents year]];
+
+    //Get from server the number of points it has
+    NSString *requestString = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/get_locations.php?userName=%@&deviceName=%@&date=%@&daysHistory=%d",
+                               userName,
+                               deviceName,
+                               date,
+                               numDaysHistory];
+    
+    NSURL *url = [NSURL URLWithString:requestString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:10];
+    [request setHTTPMethod: @"GET"];
+    NSError *requestError;
+    NSURLResponse *urlResponse = nil;
+    NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
+    NSString* respString = [[NSString alloc] initWithData:respData encoding:NSUTF8StringEncoding];
+    NSArray* reponsePieces = [respString componentsSeparatedByString:@" "];
+    
+    ////////////////////MAP NEW DATA//////////////////////////////
+    //Arrays to hold coordinates
+    CLLocationCoordinate2D lastCoordinates;
+    MKPointAnnotation* lastPoints;
+    
+    //Put all received data into map
+    for (int i = 0; i < [reponsePieces count] - 1; i+=4){
+        
+        //Create the coordinate
+        lastCoordinates.latitude = [reponsePieces[i + 1] doubleValue];
+        lastCoordinates.longitude = [reponsePieces[i] doubleValue];
+        
+        //Create the point
+        lastPoints = [[MKPointAnnotation alloc] init];
+        lastPoints.coordinate = lastCoordinates;
+        lastPoints.title = reponsePieces[i+2];
+        
+        //Print point on map
+        [_mapView addAnnotation:lastPoints];
+        
+    }
+
     //Fix up map to center it
     [_mapView showAnnotations:[_mapView annotations] animated:YES];
+
     
 }
 

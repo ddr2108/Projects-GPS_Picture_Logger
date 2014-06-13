@@ -1,5 +1,5 @@
 //
-//  SecondViewController.h
+//  SettingsViewController
 //  GPS Logger
 //
 //  Created by Deep Datta Roy on 5/16/14.
