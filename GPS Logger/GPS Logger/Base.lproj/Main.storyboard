@@ -205,7 +205,8 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <action selector="finishedName:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="2oF-4O-kMI"/>
+                                    <action selector="finishedUserName:" destination="QUy-BD-bpt" eventType="editingDidEnd" id="PHV-Ov-0aT"/>
+                                    <action selector="finishedUserName:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="jkj-8i-AHW"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FYJ-YU-sVZ">
@@ -214,18 +215,19 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
+                                    <action selector="finishedDeviceName:" destination="QUy-BD-bpt" eventType="editingDidEnd" id="PQT-jg-UzT"/>
                                     <action selector="finishedDeviceName:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="mYJ-fv-0EO"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="He4-Qk-13b">
-                                <rect key="frame" x="84" y="101" width="51" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="User Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="He4-Qk-13b">
+                                <rect key="frame" x="47" y="100" width="91" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Device Name:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LoI-1r-s63">
-                                <rect key="frame" x="28" y="148" width="107" height="21"/>
+                                <rect key="frame" x="31" y="147" width="107" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -237,11 +239,12 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
                                 <connections>
-                                    <action selector="finishedPoints:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="fnt-mP-7Co"/>
+                                    <action selector="finishedDaysHistory:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="Thl-6D-JnL"/>
+                                    <action selector="finishedDaysHistory:" destination="QUy-BD-bpt" eventType="editingDidEnd" id="TtJ-W2-K8P"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Days to Show:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zO-9E-SpE">
-                                <rect key="frame" x="26" y="326" width="112" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Days History:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3zO-9E-SpE">
+                                <rect key="frame" x="35" y="326" width="103" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -259,7 +262,7 @@
                                 </connections>
                             </button>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9k2-1H-2tK">
-                                <rect key="frame" x="168" y="198" width="51" height="31"/>
+                                <rect key="frame" x="150" y="198" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="autoLog:" destination="QUy-BD-bpt" eventType="valueChanged" id="ZOf-Wf-V4k"/>
@@ -271,11 +274,12 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
                                 <connections>
+                                    <action selector="finishedInterval:" destination="QUy-BD-bpt" eventType="editingDidEnd" id="ppZ-LW-1qT"/>
                                     <action selector="finishedInterval:" destination="QUy-BD-bpt" eventType="editingDidEndOnExit" id="tEP-6n-ZOO"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Log Interval:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wZp-Q4-lbK">
-                                <rect key="frame" x="43" y="253" width="95" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Interval:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wZp-Q4-lbK">
+                                <rect key="frame" x="77" y="253" width="61" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -296,7 +300,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Points Available:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hdB-b7-Kvv">
-                                <rect key="frame" x="15" y="369" width="127" height="21"/>
+                                <rect key="frame" x="11" y="370" width="127" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -316,8 +320,8 @@
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Synced:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GcU-Zp-Err">
-                                <rect key="frame" x="77" y="407" width="65" height="21"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sync Time:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GcU-Zp-Err">
+                                <rect key="frame" x="52" y="407" width="86" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -327,10 +331,13 @@
                                 <rect key="frame" x="28" y="463" width="118" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Sync Now">
+                                <state key="normal" title="Sync">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="sync:" destination="QUy-BD-bpt" eventType="touchUpInside" id="0Cc-UO-MSA"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.028366193549999998" green="0.052908156800000002" blue="0.14109205159999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -338,12 +345,12 @@
                     <tabBarItem key="tabBarItem" title="Settings" image="first" id="Z7h-1E-pvt"/>
                     <connections>
                         <outlet property="autoLogSwitch" destination="9k2-1H-2tK" id="WCm-MT-qbc"/>
-                        <outlet property="deviceNameTextBox" destination="FYJ-YU-sVZ" id="lNN-VN-WJ2"/>
-                        <outlet property="nameTextBox" destination="2pl-b8-Rlg" id="bAD-L1-Wrk"/>
+                        <outlet property="daysHistoryTextBox" destination="jRy-R2-fAq" id="QOv-DV-fzX"/>
+                        <outlet property="deviceNameTextBox" destination="FYJ-YU-sVZ" id="s6A-ZK-xAG"/>
+                        <outlet property="intervalTextBox" destination="ZhC-xh-vAp" id="nkN-Bg-SuP"/>
                         <outlet property="pointsAvailableLabel" destination="sBC-Qh-pqx" id="XnG-nz-46R"/>
-                        <outlet property="pointsTextBox" destination="jRy-R2-fAq" id="9Bg-26-55i"/>
-                        <outlet property="syncedLabel" destination="Sp6-dk-qwm" id="c61-4j-r0z"/>
-                        <outlet property="timeIntervalTextBox" destination="ZhC-xh-vAp" id="kAa-7O-5ot"/>
+                        <outlet property="syncTimeLabel" destination="Sp6-dk-qwm" id="iz4-ie-VNy"/>
+                        <outlet property="userNameTextBox" destination="2pl-b8-Rlg" id="jBo-Dh-Cd3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3qq-4t-Ow8" sceneMemberID="firstResponder"/>

@@ -87,6 +87,7 @@
 
         //Return success
         return TRUE;
+        
     }
 
     /*
@@ -109,6 +110,7 @@
         
         //Return success
         return TRUE;
+        
     }
 
     /*
@@ -123,8 +125,16 @@
      */
     - (NSArray*) getLocations{
         
+        //Correct the times
+        for (int i = 3; i < [logData count]; i+=4){
+            //Fix teh time and replace in array
+            NSString* logTime = [NSString stringWithFormat:@"%ld:%02ld", [logData[i] longValue]/60, [logData[i] longValue]%60];
+            [logData replaceObjectAtIndex:i withObject:logTime];
+        }
+        
         //return data
         return logData;
+        
     }
 
     /*
@@ -167,7 +177,7 @@
         for (int i = 0; i < [self getNumLocations]; i++){
             
             //Get the coordinates
-            double coordinates[] = {[logData[2*i+0] integerValue], [logData[2*i+1] integerValue]};
+            double coordinates[] = {[logData[2*i+0] doubleValue], [logData[2*i+1] doubleValue]};
             NSString* oldDate = logData[2*i+2];
             NSInteger oldTime = [logData[2*i+3] integerValue];
             
@@ -191,7 +201,7 @@
         
         //if all successful, update sync time
         if (sendFail == FALSE){
-            NSString *syncTime = [NSString stringWithFormat:@"%@ %ld:%ld", date, time/60, time%60];
+            NSString *syncTime = [NSString stringWithFormat:@"%@ %ld:%02ld", date, time/60, time%60];
             [defaults setObject:syncTime forKey:@"syncTime"];
         }
         

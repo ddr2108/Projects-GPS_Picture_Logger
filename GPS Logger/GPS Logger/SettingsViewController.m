@@ -1,6 +1,7 @@
 //
-//  SecondViewController.m
+//  SettingsViewController
 //  GPS Logger
+//  Set up the settings
 //
 //  Created by Deep Datta Roy on 5/16/14.
 //  Copyright (c) 2014 ___FULLUSERNAME___. All rights reserved.
@@ -12,127 +13,281 @@
 
 @interface SettingsViewController ()
 
-    @property (weak, nonatomic) IBOutlet UITextField *nameTextBox;
-    @property (weak, nonatomic) IBOutlet UITextField *deviceNameTextBox;
-    @property (weak, nonatomic) IBOutlet UITextField *pointsTextBox;
-    @property (weak, nonatomic) IBOutlet UITextField *timeIntervalTextBox;
-    @property (weak, nonatomic) IBOutlet UILabel *pointsAvailableLabel;
-    @property (weak, nonatomic) IBOutlet UISwitch *autoLogSwitch;
-    @property (weak, nonatomic) IBOutlet UILabel *syncedLabel;
+    //Interact with user
+    @property (weak, nonatomic) IBOutlet UITextField* userNameTextBox;
+    @property (weak, nonatomic) IBOutlet UITextField* deviceNameTextBox;
+    @property (weak, nonatomic) IBOutlet UITextField* intervalTextBox;
+    @property (weak, nonatomic) IBOutlet UITextField* daysHistoryTextBox;
+    @property (weak, nonatomic) IBOutlet UISwitch* autoLogSwitch;
+    @property (weak, nonatomic) IBOutlet UILabel* pointsAvailableLabel;
+    @property (weak, nonatomic) IBOutlet UILabel* syncTimeLabel;
 
 @end
 
 @implementation SettingsViewController{
+    //holds the defaults
     NSUserDefaults *defaults;
 }
 
-- (void)viewDidLoad{
-    [super viewDidLoad];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-    
-    //////////////////////RESTORE DEFAULTS/////////////////////////
-    defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *userName = [defaults objectForKey:@"userName"];
-    NSString *deviceName = [defaults objectForKey:@"deviceName"];
-    NSString* days = [defaults objectForKey:@"daysHistory"];
-    NSString* interval = [defaults objectForKey:@"interval"];
-    NSNumber* autoLog = [defaults objectForKey:@"autoLog"];;
-    NSString* syncTime = [defaults objectForKey:@"syncTime"];
-    NSLog(@"%d", [autoLog intValue]);
-    self.nameTextBox.text = userName;
-    self.deviceNameTextBox.text = deviceName;
-    self.pointsTextBox.text = days;
-    self.timeIntervalTextBox.text = interval;
-    self.syncedLabel.text = syncTime;
-    if ([autoLog intValue] == 1){
-        [self.autoLogSwitch setOn:TRUE];
-    }else{
-        [self.autoLogSwitch setOn:FALSE];
-    }
-    
-    ///////////////////////CHECK FOR DATA /////////////////////
-    //Data local
-    localLogger* localLog = [[localLogger alloc] init];
-    //Data on server
-    serverLogger* serverLog = [[serverLogger alloc] init];
-    
-    //Count total data
-    int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
-    self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
-    
-}
-
-- (void)didReceiveMemoryWarning{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
-- (IBAction)clearHistory:(id)sender {
-    
-    ///////////////////////CLEAR LOCAL/////////////////////
-    //Create object for server logging
-    localLogger *localLog = [[localLogger alloc] init];
-    //Delete Data
-    [localLog deleteGPS];
-    
-    /////////////////////////CLEAR SERVER///////////////////
-    //Create object for server logging
-    serverLogger *serverLog = [[serverLogger alloc] init];
-    //Delete Data
-    [serverLog deleteGPS];
-
-    ///////////////////FIX GUI/////////////////////////////
-    self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", 0];
-
-}
-
-- (IBAction)finishedName:(id)sender {
-    //Get the new name
-    NSString* name = [self.nameTextBox text];
-    
-    //Store into defaults
-    [defaults setObject:name forKey:@"userName"];
-}
-
-- (IBAction)finishedDeviceName:(id)sender {
-    //Get the new name
-    NSString* deviceName = [self.deviceNameTextBox text];
-    
-    //Store into defaults
-    [defaults setObject:deviceName forKey:@"deviceName"];
-}
-
-- (IBAction)finishedPoints:(id)sender {
-    //Get the new name
-    NSString* days = [self.pointsTextBox text];
-    
-    //Store into defaults
-    [defaults setObject:days forKey:@"daysHistory"];
-}
-- (IBAction)finishedInterval:(id)sender {
-    //Get the new name
-    NSString* interval = [self.timeIntervalTextBox text];
-    
-    //Store into defaults
-    [defaults setObject:interval forKey:@"interval"];
-
-}
-- (IBAction)autoLog:(id)sender {
-    //Get the new log mode
-    NSNumber* autoLog;
-    if ([sender isOn]){
-        autoLog = [NSNumber numberWithInt:1];
-    }else{
-        autoLog = [NSNumber numberWithInt:0];
+    /*
+     * viewDidLoad()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Initialize view for gui
+     */
+    - (void)viewDidLoad{
+        [super viewDidLoad];
     }
 
-    //Store into defaults
-    [defaults setObject:autoLog forKey:@"autoLog"];
+    /*
+     * viewDidAppear()
+     *
+     * parameters:
+     * 	BOOL animated
+     * returns:
+     * 	none
+     *
+     * Restore the labels and text boxes for setting
+     */
+    - (void)viewDidAppear:(BOOL)animated{
+        
+        //////////////////////RESTORE DEFAULTS/////////////////////////
+        defaults = [NSUserDefaults standardUserDefaults];
+        
+        NSString* userName = [defaults objectForKey:@"userName"];
+        NSString* deviceName = [defaults objectForKey:@"deviceName"];
+        NSString* interval = [defaults objectForKey:@"interval"];
+        NSString* days = [defaults objectForKey:@"daysHistory"];
+        NSNumber* autoLog = [defaults objectForKey:@"autoLog"];;
+        NSString* syncTime = [defaults objectForKey:@"syncTime"];
 
-}
+        self.userNameTextBox.text = userName;
+        self.deviceNameTextBox.text = deviceName;
+        self.intervalTextBox.text = interval;
+        self.daysHistoryTextBox.text = days;
+        if ([autoLog intValue] == 1){
+            [self.autoLogSwitch setOn:TRUE];
+        }else{
+            [self.autoLogSwitch setOn:FALSE];
+        }
+        self.syncTimeLabel.text = syncTime;
+
+        
+        ///////////////////////CHECK FOR DATA /////////////////////
+        //Data local
+        localLogger* localLog = [[localLogger alloc] init];
+        //Data on server
+        serverLogger* serverLog = [[serverLogger alloc] init];
+        
+        //Count total data
+        int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
+        self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
+        
+    }
+
+    /*
+     * didReceiveMemoryWarning()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Memory cleaning
+     */
+    - (void)didReceiveMemoryWarning{
+        [super didReceiveMemoryWarning];
+    }
+
+    /*
+     * sync()
+     *
+     * parameters:
+     * 	id sender - the button that did it
+     * returns:
+     * 	none
+     *
+     * Sync the data points
+     */
+    - (IBAction)sync:(id)sender {
+        
+        //Create object for local logging
+        localLogger* localLog = [[localLogger alloc] init];
+        //Sync data
+        [localLog sendToServer];
+        
+        //Adjust the sync time if needed
+        NSString* syncTime = [defaults objectForKey:@"syncTime"];
+        self.syncTimeLabel.text = syncTime;
+
+    }
+
+
+    /*
+     * clearHistory()
+     *
+     * parameters:
+     * 	id sender - the button that did it
+     * returns:
+     * 	none
+     *
+     * Clear all the data points
+     */
+    - (IBAction)clearHistory:(id)sender {
+        
+        //Create object for local logging
+        localLogger* localLog = [[localLogger alloc] init];
+        //Delete Data locally
+        [localLog deleteGPS];
+        
+        //Create object for server logging
+        serverLogger* serverLog = [[serverLogger alloc] init];
+        //Delete Data at server
+        [serverLog deleteGPS];
+
+        //Update saying no more points available
+        self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", 0];
+
+    }
+
+    /*
+     * finishedUserName()
+     *
+     * parameters:
+     * 	id sender - the text box that did it
+     * returns:
+     * 	none
+     *
+     * Save user Name
+     */
+    - (IBAction)finishedUserName:(id)sender {
+        
+        //Get the new name
+        NSString* userName = [self.userNameTextBox text];
+        
+        //Store into defaults
+        [defaults setObject:userName forKey:@"userName"];
+    }
+
+    /*
+     * finishedDeviceName()
+     *
+     * parameters:
+     * 	id sender - the text box that did it
+     * returns:
+     * 	none
+     *
+     * Save device name
+     */
+    - (IBAction)finishedDeviceName:(id)sender {
+        
+        //Get the new name
+        NSString* deviceName = [self.deviceNameTextBox text];
+        
+        //Store into defaults
+        [defaults setObject:deviceName forKey:@"deviceName"];
+        
+    }
+
+    /*
+     * finishedInterval()
+     *
+     * parameters:
+     * 	id sender - the text box that did it
+     * returns:
+     * 	none
+     *
+     * Save logging interval
+     */
+    - (IBAction)finishedInterval:(id)sender {
+        
+        //Get the new name
+        NSString* interval = [self.intervalTextBox text];
+        
+        //Store into defaults if a number
+        if ([interval rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound){
+            [self showWarningMessage];
+            self.intervalTextBox.text = [defaults objectForKey:@"interval"];
+        }else{
+            [defaults setObject:interval forKey:@"interval"];
+        }
+
+    }
+
+    /*
+     * finishedDaysHistory()
+     *
+     * parameters:
+     * 	id sender - the text box that did it
+     * returns:
+     * 	none
+     *
+     * Save number of days history to save
+     */
+    - (IBAction)finishedDaysHistory:(id)sender {
+        
+        //Get the new name
+        NSString* daysHistory = [self.daysHistoryTextBox text];
+        
+        //Store into defaults if a number
+        if ([daysHistory rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound){
+            [self showWarningMessage];
+            self.daysHistoryTextBox.text = [defaults objectForKey:@"daysHistory"];
+        }else{
+            [defaults setObject:daysHistory forKey:@"daysHistory"];
+        }
+
+    }
+
+    /*
+     * autoLog()
+     *
+     * parameters:
+     * 	id sender - the switch that did it
+     * returns:
+     * 	none
+     *
+     * Save auto log button
+     */
+    - (IBAction)autoLog:(id)sender {
+        
+        //Get the new log mode
+        NSNumber* autoLog;
+        if ([sender isOn]){
+            autoLog = [NSNumber numberWithInt:1];
+        }else{
+            autoLog = [NSNumber numberWithInt:0];
+        }
+
+        //Store into defaults
+        [defaults setObject:autoLog forKey:@"autoLog"];
+
+    }
+
+    /*
+     * showWarningMessage()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Show warning message
+     */
+    - (void) showWarningMessage{
+        
+        //Create message dialog and show it
+        UIAlertView *warningMessage = [[UIAlertView alloc] initWithTitle:@"Error"
+														message:@"Has to be a positive number"
+													   delegate:nil
+											  cancelButtonTitle:@"OK"
+											  otherButtonTitles: nil];
+		[warningMessage show];
+        
+    }
 
 @end

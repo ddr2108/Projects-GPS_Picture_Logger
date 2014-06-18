@@ -111,7 +111,7 @@
      *
      * Saves the GPS data to the server
      */
-    - (BOOL) saveGPS: (double*)coordinates forDate:(NSString*)oldDate forTime:(NSInteger)oldTime{
+    - (BOOL) saveGPS: (double*)coordinates forDate:(NSString*)oldDate forTime:(NSInteger)oldTime {
         
         //Save the modified date/time
         date = oldDate;
