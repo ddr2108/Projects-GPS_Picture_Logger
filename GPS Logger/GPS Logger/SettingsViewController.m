@@ -7,6 +7,8 @@
 //
 
 #import "SettingsViewController.h"
+#import "serverLogger.h"
+#import "localLogger.h"
 
 @interface SettingsViewController ()
 
@@ -20,132 +22,26 @@
 
 @end
 
-@implementation SettingsViewController
-
-- (IBAction)clearHistory:(id)sender {
-    ////////////////GET STORAGE PATH/////////////////////
-    NSFileManager *filemgr;
-    NSArray *dirPaths;
-    NSString *dataFilePath;
-    
-    //Initialize file manager
-    filemgr = [NSFileManager defaultManager];
-    
-    // Get the documents directory
-    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    // Build the path to the data file
-    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
-
-    
-    ///////////////////////STORE DATA/////////////////////
-    NSMutableArray *coordinateArray;
-    coordinateArray = [[NSMutableArray alloc] init];
-    
-    //Stor data to archive
-    [NSKeyedArchiver archiveRootObject:coordinateArray toFile: dataFilePath];
-    
-    self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", 0];
-    
-    
-    /////////////////////////CLEAR SERVER///////////////////
-    //Get user defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Get things need to send to db
-    NSString *userName = [defaults objectForKey:@"userName"];
-    NSString *deviceName = [defaults objectForKey:@"deviceName"];
-    
-    //Create the request url and submit
-    NSString *requestString = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/delete_gps.php?userName=%@&deviceName=%@",
-                               userName,
-                               deviceName];
-    NSURL *url = [NSURL URLWithString:requestString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                       timeoutInterval:10];
-    [request setHTTPMethod: @"GET"];
-    NSError *requestError;
-    NSURLResponse *urlResponse = nil;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
-
-
+@implementation SettingsViewController{
+    NSUserDefaults *defaults;
 }
 
-- (IBAction)finishedName:(id)sender {
-    //Get the new name
-    NSString* name = [self.nameTextBox text];
-    
-    //Get the defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Store into defaults
-    [defaults setObject:name forKey:@"userName"];
-}
-
-- (IBAction)finishedDeviceName:(id)sender {
-    //Get the new name
-    NSString* deviceName = [self.deviceNameTextBox text];
-    
-    //Get the defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Store into defaults
-    [defaults setObject:deviceName forKey:@"deviceName"];
-}
-
-- (IBAction)finishedPoints:(id)sender {
-    //Get the new name
-    NSString* days = [self.pointsTextBox text];
-    
-    //Get the defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Store into defaults
-    [defaults setObject:days forKey:@"days"];
-}
-- (IBAction)finishedInterval:(id)sender {
-    //Get the new name
-    NSString* interval = [self.timeIntervalTextBox text];
-    
-    //Get the defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Store into defaults
-    [defaults setObject:interval forKey:@"interval"];
-
-}
-- (IBAction)autoLog:(id)sender {
-    //Get the new name
-    NSNumber* autoLog;
-    if ([sender isOn]){
-        [autoLog initWithInt:1];
-    }else{
-        [autoLog initWithInt:0];
-    }
-    //Get the defaults
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    //Store into defaults
-    [defaults setObject:autoLog forKey:@"autoLog"];
-
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad{
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+}
 
+- (void)viewDidAppear:(BOOL)animated{
+    
     //////////////////////RESTORE DEFAULTS/////////////////////////
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    defaults = [NSUserDefaults standardUserDefaults];
     
     NSString *userName = [defaults objectForKey:@"userName"];
     NSString *deviceName = [defaults objectForKey:@"deviceName"];
-    NSString* days = [defaults objectForKey:@"days"];
+    NSString* days = [defaults objectForKey:@"daysHistory"];
     NSString* interval = [defaults objectForKey:@"interval"];
     NSNumber* autoLog = [defaults objectForKey:@"autoLog"];;
     NSString* syncTime = [defaults objectForKey:@"syncTime"];
-
-    
+    NSLog(@"%d", [autoLog intValue]);
     self.nameTextBox.text = userName;
     self.deviceNameTextBox.text = deviceName;
     self.pointsTextBox.text = days;
@@ -157,62 +53,86 @@
         [self.autoLogSwitch setOn:FALSE];
     }
     
-    ////////////////GET STORAGE PATH/////////////////////
-    NSFileManager *filemgr;
-    NSArray *dirPaths;
-    NSString *dataFilePath;
+    ///////////////////////CHECK FOR DATA /////////////////////
+    //Data local
+    localLogger* localLog = [[localLogger alloc] init];
+    //Data on server
+    serverLogger* serverLog = [[serverLogger alloc] init];
     
-    //Initialize file manager
-    filemgr = [NSFileManager defaultManager];
-    
-    // Get the documents directory
-    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    // Build the path to the data file
-    dataFilePath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: @"gps_logger.archive"]];
-    
-    ///////////////////////GET SIZE OF DATA/////////////////////
-    NSMutableArray *coordinateArray;
-    coordinateArray = [NSKeyedUnarchiver unarchiveObjectWithFile: dataFilePath];
-    
-    //////////////////////CHECK FOR DATA AT SERVER/////////////////
-    //Get date
-    NSDate *currentDate = [NSDate date];
-    unsigned units = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit;
-    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *dateComponents = [calendar components:units fromDate:currentDate];
-    NSString *date = [NSString stringWithFormat:@"%ld-%ld-%ld", (long)[dateComponents month], [dateComponents day], (long)[dateComponents year]];
-    
-    //Get from server the number of points it has
-    NSString *requestString = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/get_locations.php?userName=%@&deviceName=%@&date=%@&daysHistory=%d",
-                               userName,
-                               deviceName,
-                               date,
-                               -1];
-
-    NSURL *url = [NSURL URLWithString:requestString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                                        cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                        timeoutInterval:10];
-    [request setHTTPMethod: @"GET"];
-    NSError *requestError;
-    NSURLResponse *urlResponse = nil;
-    NSData *respData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&requestError];
-    NSString* respString = [[NSString alloc] initWithData:respData encoding:NSUTF8StringEncoding];
-
-    int totalPoints = [respString intValue] + (int)[coordinateArray count]/2;
+    //Count total data
+    int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
     self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
-
     
 }
-- (void)viewDidAppear:(BOOL)animated{
 
-
-}
-
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (IBAction)clearHistory:(id)sender {
+    
+    ///////////////////////CLEAR LOCAL/////////////////////
+    //Create object for server logging
+    localLogger *localLog = [[localLogger alloc] init];
+    //Delete Data
+    [localLog deleteGPS];
+    
+    /////////////////////////CLEAR SERVER///////////////////
+    //Create object for server logging
+    serverLogger *serverLog = [[serverLogger alloc] init];
+    //Delete Data
+    [serverLog deleteGPS];
+
+    ///////////////////FIX GUI/////////////////////////////
+    self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", 0];
+
+}
+
+- (IBAction)finishedName:(id)sender {
+    //Get the new name
+    NSString* name = [self.nameTextBox text];
+    
+    //Store into defaults
+    [defaults setObject:name forKey:@"userName"];
+}
+
+- (IBAction)finishedDeviceName:(id)sender {
+    //Get the new name
+    NSString* deviceName = [self.deviceNameTextBox text];
+    
+    //Store into defaults
+    [defaults setObject:deviceName forKey:@"deviceName"];
+}
+
+- (IBAction)finishedPoints:(id)sender {
+    //Get the new name
+    NSString* days = [self.pointsTextBox text];
+    
+    //Store into defaults
+    [defaults setObject:days forKey:@"daysHistory"];
+}
+- (IBAction)finishedInterval:(id)sender {
+    //Get the new name
+    NSString* interval = [self.timeIntervalTextBox text];
+    
+    //Store into defaults
+    [defaults setObject:interval forKey:@"interval"];
+
+}
+- (IBAction)autoLog:(id)sender {
+    //Get the new log mode
+    NSNumber* autoLog;
+    if ([sender isOn]){
+        autoLog = [NSNumber numberWithInt:1];
+    }else{
+        autoLog = [NSNumber numberWithInt:0];
+    }
+
+    //Store into defaults
+    [defaults setObject:autoLog forKey:@"autoLog"];
+
 }
 
 @end

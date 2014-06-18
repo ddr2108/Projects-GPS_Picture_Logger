@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E2FC8F81950C14600301952 /* localLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E2FC8F71950C14600301952 /* localLogger.m */; };
+		6E36A273194D043800F35F94 /* serverLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E36A272194D043800F35F94 /* serverLogger.m */; };
 		6E567F32192D74940028BE0D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E567F31192D74940028BE0D /* CoreLocation.framework */; };
 		6E567F381930E0CF0028BE0D /* LocationUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E567F361930E0CF0028BE0D /* LocationUtil.cpp */; };
 		6EF01BF9192701EE0062EA0F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01BF8192701EE0062EA0F /* Foundation.framework */; };
@@ -39,6 +41,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6E2FC8F61950C14600301952 /* localLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = localLogger.h; sourceTree = "<group>"; };
+		6E2FC8F71950C14600301952 /* localLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = localLogger.m; sourceTree = "<group>"; };
+		6E36A271194D043800F35F94 /* serverLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = serverLogger.h; sourceTree = "<group>"; };
+		6E36A272194D043800F35F94 /* serverLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = serverLogger.m; sourceTree = "<group>"; };
 		6E567F31192D74940028BE0D /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		6E567F361930E0CF0028BE0D /* LocationUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LocationUtil.cpp; sourceTree = "<group>"; };
 		6E567F371930E0CF0028BE0D /* LocationUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationUtil.h; sourceTree = "<group>"; };
@@ -97,6 +103,10 @@
 		6EF01BEC192701EE0062EA0F = {
 			isa = PBXGroup;
 			children = (
+				6E2FC8F61950C14600301952 /* localLogger.h */,
+				6E2FC8F71950C14600301952 /* localLogger.m */,
+				6E36A271194D043800F35F94 /* serverLogger.h */,
+				6E36A272194D043800F35F94 /* serverLogger.m */,
 				6EF01BFE192701EE0062EA0F /* GPS Logger */,
 				6EF01C20192701EE0062EA0F /* GPS LoggerTests */,
 				6EF01BF7192701EE0062EA0F /* Frameworks */,
@@ -282,8 +292,10 @@
 			files = (
 				6EF01C12192701EE0062EA0F /* SettingsViewController.m in Sources */,
 				6EF01C09192701EE0062EA0F /* AppDelegate.m in Sources */,
+				6E36A273194D043800F35F94 /* serverLogger.m in Sources */,
 				6EF01C0F192701EE0062EA0F /* IntroViewController.m in Sources */,
 				6EF01C3619278F260062EA0F /* HistoryViewController.m in Sources */,
+				6E2FC8F81950C14600301952 /* localLogger.m in Sources */,
 				6EF01C05192701EE0062EA0F /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
