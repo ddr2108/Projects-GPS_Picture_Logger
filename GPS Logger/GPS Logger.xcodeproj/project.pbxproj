@@ -18,7 +18,7 @@
 		6EF01C05192701EE0062EA0F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C04192701EE0062EA0F /* main.m */; };
 		6EF01C09192701EE0062EA0F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C08192701EE0062EA0F /* AppDelegate.m */; };
 		6EF01C0C192701EE0062EA0F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EF01C0A192701EE0062EA0F /* Main.storyboard */; };
-		6EF01C0F192701EE0062EA0F /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C0E192701EE0062EA0F /* IntroViewController.m */; };
+		6EF01C0F192701EE0062EA0F /* GPSLoggerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C0E192701EE0062EA0F /* GPSLoggerViewController.m */; };
 		6EF01C12192701EE0062EA0F /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C11192701EE0062EA0F /* SettingsViewController.m */; };
 		6EF01C14192701EE0062EA0F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6EF01C13192701EE0062EA0F /* Images.xcassets */; };
 		6EF01C1B192701EE0062EA0F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01C1A192701EE0062EA0F /* XCTest.framework */; };
@@ -27,7 +27,7 @@
 		6EF01C25192701EE0062EA0F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6EF01C23192701EE0062EA0F /* InfoPlist.strings */; };
 		6EF01C27192701EE0062EA0F /* GPS_LoggerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C26192701EE0062EA0F /* GPS_LoggerTests.m */; };
 		6EF01C31192702FA0062EA0F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EF01C30192702FA0062EA0F /* MapKit.framework */; };
-		6EF01C3619278F260062EA0F /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C3519278F260062EA0F /* HistoryViewController.m */; };
+		6EF01C3619278F260062EA0F /* LocationHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EF01C3519278F260062EA0F /* LocationHistoryViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,8 +59,8 @@
 		6EF01C07192701EE0062EA0F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6EF01C08192701EE0062EA0F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		6EF01C0B192701EE0062EA0F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		6EF01C0D192701EE0062EA0F /* IntroViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroViewController.h; sourceTree = "<group>"; };
-		6EF01C0E192701EE0062EA0F /* IntroViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntroViewController.m; sourceTree = "<group>"; };
+		6EF01C0D192701EE0062EA0F /* GPSLoggerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPSLoggerViewController.h; sourceTree = "<group>"; };
+		6EF01C0E192701EE0062EA0F /* GPSLoggerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPSLoggerViewController.m; sourceTree = "<group>"; };
 		6EF01C10192701EE0062EA0F /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		6EF01C11192701EE0062EA0F /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		6EF01C13192701EE0062EA0F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -70,8 +70,8 @@
 		6EF01C24192701EE0062EA0F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6EF01C26192701EE0062EA0F /* GPS_LoggerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPS_LoggerTests.m; sourceTree = "<group>"; };
 		6EF01C30192702FA0062EA0F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		6EF01C3419278F260062EA0F /* HistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
-		6EF01C3519278F260062EA0F /* HistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		6EF01C3419278F260062EA0F /* LocationHistoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationHistoryViewController.h; sourceTree = "<group>"; };
+		6EF01C3519278F260062EA0F /* LocationHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationHistoryViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,10 +142,10 @@
 				6EF01C07192701EE0062EA0F /* AppDelegate.h */,
 				6EF01C08192701EE0062EA0F /* AppDelegate.m */,
 				6EF01C0A192701EE0062EA0F /* Main.storyboard */,
-				6EF01C0D192701EE0062EA0F /* IntroViewController.h */,
-				6EF01C0E192701EE0062EA0F /* IntroViewController.m */,
-				6EF01C3419278F260062EA0F /* HistoryViewController.h */,
-				6EF01C3519278F260062EA0F /* HistoryViewController.m */,
+				6EF01C0D192701EE0062EA0F /* GPSLoggerViewController.h */,
+				6EF01C0E192701EE0062EA0F /* GPSLoggerViewController.m */,
+				6EF01C3419278F260062EA0F /* LocationHistoryViewController.h */,
+				6EF01C3519278F260062EA0F /* LocationHistoryViewController.m */,
 				6EF01C10192701EE0062EA0F /* SettingsViewController.h */,
 				6EF01C11192701EE0062EA0F /* SettingsViewController.m */,
 				6EF01C13192701EE0062EA0F /* Images.xcassets */,
@@ -293,8 +293,8 @@
 				6EF01C12192701EE0062EA0F /* SettingsViewController.m in Sources */,
 				6EF01C09192701EE0062EA0F /* AppDelegate.m in Sources */,
 				6E36A273194D043800F35F94 /* serverLogger.m in Sources */,
-				6EF01C0F192701EE0062EA0F /* IntroViewController.m in Sources */,
-				6EF01C3619278F260062EA0F /* HistoryViewController.m in Sources */,
+				6EF01C0F192701EE0062EA0F /* GPSLoggerViewController.m in Sources */,
+				6EF01C3619278F260062EA0F /* LocationHistoryViewController.m in Sources */,
 				6E2FC8F81950C14600301952 /* localLogger.m in Sources */,
 				6EF01C05192701EE0062EA0F /* main.m in Sources */,
 			);

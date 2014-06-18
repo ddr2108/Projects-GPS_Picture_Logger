@@ -1,5 +1,5 @@
 //
-//  HistoryViewController.m
+//  LocationHistoryViewController.m
 //  GPS Logger
 //  Contains the map for history
 //
@@ -8,17 +8,17 @@
 //
 
 #import <MapKit/MapKit.h>
-#import "HistoryViewController.h"
+#import "LocationHistoryViewController.h"
 #import "serverLogger.h"
 #import "localLogger.h"
 
 
-@interface HistoryViewController () <MKMapViewDelegate>
+@interface LocationHistoryViewController () <MKMapViewDelegate>
     //map view
     @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @end
 
-@implementation HistoryViewController
+@implementation LocationHistoryViewController
 
     /*
     * viewDidLoad()

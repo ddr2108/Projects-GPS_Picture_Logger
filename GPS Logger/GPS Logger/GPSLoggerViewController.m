@@ -1,5 +1,5 @@
 //
-//  IntroViewController
+//  GPSLoggerViewController.m
 //  GPS Logger
 //  Does the inital logging
 //
@@ -10,12 +10,12 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
-#import "IntroViewController.h"
+#import "GPSLoggerViewController.h"
 #import "serverLogger.h"
 #import "localLogger.h"
 
 
-@interface IntroViewController () <CLLocationManagerDelegate, MKMapViewDelegate>
+@interface GPSLoggerViewController () <CLLocationManagerDelegate, MKMapViewDelegate>
 
     //Interaction with interface
     @property (weak, nonatomic) IBOutlet UILabel* latitudeLabel;
@@ -29,7 +29,7 @@
 
 @end
 
-@implementation IntroViewController{
+@implementation GPSLoggerViewController{
     
     //Managers
     CLLocationManager *manager;
@@ -98,14 +98,14 @@
         NSString *userName = [defaults objectForKey:@"userName"];
         if (userName==NULL){
             //Create User defaults
-            [defaults setObject:[NSString stringWithFormat:@"deep"] forKey:@"userName"];
-            [defaults setObject:[NSString stringWithFormat:@"deep-iPhone"] forKey:@"deviceName"];
+            [defaults setObject:[NSString stringWithFormat:@"%@", [[NSUUID UUID] UUIDString]] forKey:@"userName"];
+            [defaults setObject:[NSString stringWithFormat:@"%@", [[UIDevice currentDevice] name]] forKey:@"deviceName"];
             [defaults setObject:[NSString stringWithFormat:@"10"] forKey:@"daysHistory"];
             [defaults setObject:[NSString stringWithFormat:@"10"] forKey:@"interval"];
             [defaults setObject:[NSString stringWithFormat:@"Never"] forKey:@"syncTime"];
             [defaults setObject:[NSNumber numberWithInt:0] forKey:@"autoLog"];
         }
-        
+
     }
     /*
      * logButton()

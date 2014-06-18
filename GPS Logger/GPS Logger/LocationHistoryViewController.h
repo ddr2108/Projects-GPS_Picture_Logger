@@ -1,5 +1,5 @@
 //
-//  HistoryViewController.h
+//  LocationHistoryViewController.h
 //  GPS Logger
 //
 //  Created by Deep Datta Roy on 5/17/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HistoryViewController : UIViewController
+@interface LocationHistoryViewController : UIViewController
 
 @end

@@ -1,5 +1,5 @@
 //
-//  FirstViewController.h
+//  GPSLoggerViewController.h
 //  GPS Logger
 //
 //  Created by Deep Datta Roy on 5/16/14.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface IntroViewController : UIViewController
+@interface GPSLoggerViewController : UIViewController
 
 @end
