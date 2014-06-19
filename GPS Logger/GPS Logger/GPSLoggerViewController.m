@@ -181,7 +181,7 @@
             }
         }];
         
-        /////////////////////////SEND TO SERVER///////////////////
+        /////////////////////////SAVE LOCATION///////////////////
         //Get coordinates
         double coordinates[] = {newLocation.coordinate.longitude, newLocation.coordinate.latitude};
 
