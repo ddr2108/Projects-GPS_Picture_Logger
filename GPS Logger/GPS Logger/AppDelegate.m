@@ -13,23 +13,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
-  //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startFetchingLocationsContinously) name:START_FETCH_LOCATION object:nil];
+    //Set white text at top
+    [application setStatusBarHidden:NO];
+    [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
-    
     // Override point for customization after application launch.
     return YES;
 }
-/*
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    
-    CLLocation *newLocation = [locations objectAtIndex:0];
-    CLLocation *oldLocation = [locations objectAtIndex:0];
-    
-    [delegate locationRecievedSuccesfullyWithNewLocation:newLocation oldLocation:oldLocation];
-    NSLog(@"did Update Locationsssssss");
-}
-*/
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
