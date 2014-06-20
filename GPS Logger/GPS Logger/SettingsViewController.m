@@ -79,14 +79,21 @@
 
         
         ///////////////////////CHECK FOR DATA /////////////////////
-        //Data local
-        localLogger* localLog = [[localLogger alloc] init];
-        //Data on server
-        serverLogger* serverLog = [[serverLogger alloc] init];
-        
-        //Count total data
-        int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
-        self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
+        dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{    //Asyncronous
+            
+            //Data local
+            localLogger* localLog = [[localLogger alloc] init];
+            //Data on server
+            serverLogger* serverLog = [[serverLogger alloc] init];
+            
+            //Count total data
+            int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
+            
+            //Update the text box
+            dispatch_async( dispatch_get_main_queue(), ^{
+                self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
+            });
+        });
         
     }
 

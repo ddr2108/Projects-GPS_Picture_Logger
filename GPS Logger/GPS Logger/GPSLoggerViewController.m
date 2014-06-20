@@ -182,30 +182,34 @@
         }];
         
         /////////////////////////SAVE LOCATION///////////////////
-        //Get coordinates
-        double coordinates[] = {newLocation.coordinate.longitude, newLocation.coordinate.latitude};
+        dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{   //Asyncronous
 
-        //Create object for logging to server
-        serverLogger *serverLog = [[serverLogger alloc] init];
-        //Save Data
-        BOOL dataInserted = [serverLog saveGPS:coordinates];
-        
-        //if data was inserted, try to insert other items
-        if (dataInserted==TRUE){
-            //Create local logger
-            localLogger* localLog = [[localLogger alloc] init];
+            //Get coordinates
+            double coordinates[] = {newLocation.coordinate.longitude, newLocation.coordinate.latitude};
+
+            //Create object for logging to server
+            serverLogger *serverLog = [[serverLogger alloc] init];
             //Save Data
-            [localLog sendToServer];
+            BOOL dataInserted = [serverLog saveGPS:coordinates];
             
-        }
-        
-        //If not inserted save data locally
-        if (dataInserted==FALSE){
-            //Create local logger
-            localLogger* localLog = [[localLogger alloc] init];
-            //Save Data
-            [localLog saveGPS:coordinates];
-        }
+            //if data was inserted, try to insert other items
+            if (dataInserted==TRUE){
+                //Create local logger
+                localLogger* localLog = [[localLogger alloc] init];
+                //Save Data
+                [localLog sendToServer];
+                
+            }
+            
+            //If not inserted save data locally
+            if (dataInserted==FALSE){
+                //Create local logger
+                localLogger* localLog = [[localLogger alloc] init];
+                //Save Data
+                [localLog saveGPS:coordinates];
+            }
+            
+        });
 
     }
 @end
