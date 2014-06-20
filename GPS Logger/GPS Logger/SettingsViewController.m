@@ -226,6 +226,10 @@
         }else{
             [defaults setObject:interval forKey:@"interval"];
         }
+        
+        //Contact app delegate to fix up logging
+        AppDelegate *appDelegate= [[UIApplication sharedApplication] delegate];
+        [appDelegate autoLogSetup];
 
     }
 

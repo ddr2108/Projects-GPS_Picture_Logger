@@ -84,6 +84,10 @@
      */
     - (void) autoLogSetup{
         
+        //Remove old timers
+        [repeatTimer invalidate];
+        repeatTimer = NULL;
+        
         //Check if supposed to do autologging
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         long autoLog = [[defaults objectForKey:@"autoLog"] integerValue];

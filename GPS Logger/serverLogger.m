@@ -84,6 +84,11 @@
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
         
+        //If connection could not be made
+        if (urlReturn==NULL){
+            return FALSE;
+        }
+        
         //Return whether actually inserted
         return [[[NSString alloc] initWithData:urlReturn encoding:NSUTF8StringEncoding] isEqualToString:@"Inserted"];
 
@@ -132,6 +137,11 @@
         
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
+        
+        //If connection could not be made
+        if (urlReturn==NULL){
+            return FALSE;
+        }
         
         //Return whether actually inserted
         return [[[NSString alloc] initWithData:urlReturn encoding:NSUTF8StringEncoding] isEqualToString:@"Deleted"];
@@ -184,6 +194,11 @@
 
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
+        
+        //If connection could not be made
+        if (urlReturn==NULL){
+            return 0;
+        }
         
         //Parse Data
         return (int)[[[NSString alloc] initWithData:urlReturn encoding:NSUTF8StringEncoding] integerValue];

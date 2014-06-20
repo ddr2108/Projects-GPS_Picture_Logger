@@ -89,6 +89,11 @@
      * Actually map out the points
      */
     - (void) mapPoints:(NSArray*) data{
+
+        //If there isn't data, return
+        if ([data count] < 4){
+            return;
+        }
         
         //Arrays to hold coordinates
         CLLocationCoordinate2D lastCoordinates;
