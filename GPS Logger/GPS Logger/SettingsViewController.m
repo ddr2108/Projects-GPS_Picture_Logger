@@ -8,6 +8,7 @@
 //
 
 #import "SettingsViewController.h"
+#import "AppDelegate.h"
 #import "serverLogger.h"
 #import "localLogger.h"
 
@@ -210,7 +211,10 @@
         
         //Store into defaults if a number
         if ([interval rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound){
-            [self showWarningMessage];
+            [self showWarningMessage:@"Must be a positive number less than 10"];
+            self.intervalTextBox.text = [defaults objectForKey:@"interval"];
+        }else if ([interval integerValue] > 9){
+            [self showWarningMessage:@"Must be a positive number less than 10"];
             self.intervalTextBox.text = [defaults objectForKey:@"interval"];
         }else{
             [defaults setObject:interval forKey:@"interval"];
@@ -235,7 +239,7 @@
         
         //Store into defaults if a number
         if ([daysHistory rangeOfCharacterFromSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]].location != NSNotFound){
-            [self showWarningMessage];
+            [self showWarningMessage:@"Must be a positive number"];
             self.daysHistoryTextBox.text = [defaults objectForKey:@"daysHistory"];
         }else{
             [defaults setObject:daysHistory forKey:@"daysHistory"];
@@ -265,6 +269,11 @@
 
         //Store into defaults
         [defaults setObject:autoLog forKey:@"autoLog"];
+        
+        //Contact app delegate to fix up logging
+        AppDelegate *appDelegate= [[UIApplication sharedApplication] delegate];
+        [appDelegate autoLogSetup];
+
 
     }
 
@@ -272,17 +281,17 @@
      * showWarningMessage()
      *
      * parameters:
-     * 	none
+     * 	NSString* message - message to display
      * returns:
      * 	none
      *
      * Show warning message
      */
-    - (void) showWarningMessage{
-        
+    - (void) showWarningMessage: (NSString*)message{
+    
         //Create message dialog and show it
         UIAlertView *warningMessage = [[UIAlertView alloc] initWithTitle:@"Error"
-														message:@"Has to be a positive number"
+														message:message
 													   delegate:nil
 											  cancelButtonTitle:@"OK"
 											  otherButtonTitles: nil];

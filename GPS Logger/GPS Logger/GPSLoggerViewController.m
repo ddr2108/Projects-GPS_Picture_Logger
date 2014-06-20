@@ -32,7 +32,7 @@
 @implementation GPSLoggerViewController{
     
     //Managers
-    CLLocationManager *manager;
+    CLLocationManager *locationManager;
     CLGeocoder *geocoder;
     CLPlacemark *placemark;
 
@@ -57,7 +57,7 @@
         [self initializeDefaults];
         
         //Initialize the location structures
-        manager = [[CLLocationManager alloc] init];
+        locationManager = [[CLLocationManager alloc] init];
         geocoder = [[CLGeocoder alloc] init];
         
         //Do not get coordinates yet
@@ -126,9 +126,9 @@
         self.addressLabel.text = [NSString stringWithFormat:@""];
 
         //Start updating the location
-        manager.delegate = self;
-        manager.desiredAccuracy = kCLLocationAccuracyBest;
-        [manager startUpdatingLocation];
+        locationManager.delegate = self;
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        [locationManager startUpdatingLocation];
         
         //Center the map
         _mapView.userTrackingMode=YES;

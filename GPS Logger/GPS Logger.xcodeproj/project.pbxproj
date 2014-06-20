@@ -235,6 +235,9 @@
 					6EF01BF4192701EE0062EA0F = {
 						DevelopmentTeam = WJMR7458TU;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.iOS = {
 								enabled = 1;
 							};

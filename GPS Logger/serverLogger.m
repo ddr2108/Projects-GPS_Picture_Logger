@@ -233,8 +233,8 @@
         //Create url
         NSURL *url = [NSURL URLWithString:request];
         NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url
-                                                                  cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                              timeoutInterval:10];
+                                                                cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                                timeoutInterval:1];
         [urlRequest setHTTPMethod: @"GET"];
         
         //Create parts of reponse
