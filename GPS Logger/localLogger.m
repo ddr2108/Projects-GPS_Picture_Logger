@@ -177,10 +177,10 @@
         for (int i = 0; i < [self getNumLocations]; i++){
             
             //Get the coordinates
-            double coordinates[] = {[logData[2*i+0] doubleValue], [logData[2*i+1] doubleValue]};
-            NSString* oldDate = logData[2*i+2];
-            NSInteger oldTime = [logData[2*i+3] integerValue];
-            
+            double coordinates[] = {[logData[4*i+0] doubleValue], [logData[4*i+1] doubleValue]};
+            NSString* oldDate = logData[4*i+2];
+            NSInteger oldTime = [logData[4*i+3] integerValue];
+
             //Save Data
             BOOL insertSuccess = [serverLog saveGPS:coordinates forDate:oldDate forTime:oldTime];
             
@@ -191,10 +191,10 @@
                 break;
             }else{
                 //Data to remove
-                [removedLogData addObject:logData[2*i+0]];
-                [removedLogData addObject:logData[2*i+1]];
-                [removedLogData addObject:logData[2*i+2]];
-                [removedLogData addObject:logData[2*i+3]];
+                [removedLogData addObject:logData[4*i+0]];
+                [removedLogData addObject:logData[4*i+1]];
+                [removedLogData addObject:logData[4*i+2]];
+                [removedLogData addObject:logData[4*i+3]];
             }
             
         }
