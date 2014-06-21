@@ -162,7 +162,7 @@
         
         ////////////////////GET LOCATION/////////////////////
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setDateFormat:@"h:mm a"];
+            [dateFormatter setDateFormat:@"h:mma"];
 
         
         //If there is actually a location, update the view

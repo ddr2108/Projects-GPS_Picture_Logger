@@ -42,6 +42,9 @@
      */
     - (void)viewDidLoad{
         [super viewDidLoad];
+        //Set up bring app back to active
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appReturnsActive:) name:UIApplicationWillEnterForegroundNotification object:NULL];
+        
     }
 
     /*
@@ -55,6 +58,37 @@
      * Restore the labels and text boxes for setting
      */
     - (void)viewDidAppear:(BOOL)animated{
+        [super viewDidAppear:animated];
+
+        [self setUpView];
+    }
+
+    /*
+     * appReturnsActive()
+     *
+     * parameters:
+     * 	NSNotification* notification -  app came to foreground notification
+     * returns:
+     * 	none
+     *
+     * Initialize view for gui
+     */
+    - (void)appReturnsActive:(NSNotification *)notification{
+        //Set up the view
+        [self setUpView];
+    }
+
+    /*
+     * setUpView()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Restore the labels and text boxes for setting
+     */
+    - (void) setUpView{
         
         //////////////////////RESTORE DEFAULTS/////////////////////////
         defaults = [NSUserDefaults standardUserDefaults];
@@ -65,7 +99,7 @@
         NSString* days = [defaults objectForKey:@"daysHistory"];
         NSNumber* autoLog = [defaults objectForKey:@"autoLog"];;
         NSString* syncTime = [defaults objectForKey:@"syncTime"];
-
+        
         self.userNameTextBox.text = userName;
         self.deviceNameTextBox.text = deviceName;
         self.intervalTextBox.text = interval;
@@ -76,25 +110,8 @@
             [self.autoLogSwitch setOn:FALSE];
         }
         self.syncTimeLabel.text = syncTime;
+        [self findNumPoints];
 
-        
-        ///////////////////////CHECK FOR DATA /////////////////////
-        dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{    //Asyncronous
-            
-            //Data local
-            localLogger* localLog = [[localLogger alloc] init];
-            //Data on server
-            serverLogger* serverLog = [[serverLogger alloc] init];
-            
-            //Count total data
-            int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
-            
-            //Update the text box
-            dispatch_async( dispatch_get_main_queue(), ^{
-                self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
-            });
-        });
-        
     }
 
     /*
@@ -126,11 +143,16 @@
         //Create object for local logging
         localLogger* localLog = [[localLogger alloc] init];
         //Sync data
-        [localLog sendToServer];
+        bool syncSuccess = [localLog sendToServer];
         
         //Adjust the sync time if needed
         NSString* syncTime = [defaults objectForKey:@"syncTime"];
         self.syncTimeLabel.text = syncTime;
+        
+        //Message if connection could not be made to server
+        if (syncSuccess==FALSE){
+            [self showWarningMessage:@"Unable to sync"];
+        }
 
     }
 
@@ -150,15 +172,20 @@
         //Create object for local logging
         localLogger* localLog = [[localLogger alloc] init];
         //Delete Data locally
-        [localLog deleteGPS];
+        [localLog clearHistory];
         
         //Create object for server logging
         serverLogger* serverLog = [[serverLogger alloc] init];
         //Delete Data at server
-        [serverLog deleteGPS];
-
-        //Update saying no more points available
-        self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", 0];
+        BOOL clearSuccess = [serverLog clearHistory];
+        
+        //Message if connection could not be made to server
+        if (clearSuccess==FALSE){
+            [self showWarningMessage:@"Unable to delete server history"];
+        }
+        
+        //Update number points available
+        [self findNumPoints];
 
     }
 
@@ -177,8 +204,15 @@
         //Get the new name
         NSString* userName = [self.userNameTextBox text];
         
+        //Create new log file for user
+        localLogger* localLog = [[localLogger alloc] init];
+        [localLog renameOld:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
+        
         //Store into defaults
         [defaults setObject:userName forKey:@"userName"];
+        
+        //Get a new count for points
+        [self findNumPoints];
     }
 
     /*
@@ -196,9 +230,15 @@
         //Get the new name
         NSString* deviceName = [self.deviceNameTextBox text];
         
+        //Create new log file for user
+        localLogger* localLog = [[localLogger alloc] init];
+        [localLog renameOld:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
+        
         //Store into defaults
         [defaults setObject:deviceName forKey:@"deviceName"];
         
+        //Get a new count for points
+        [self findNumPoints];
     }
 
     /*
@@ -307,6 +347,37 @@
 											  cancelButtonTitle:@"OK"
 											  otherButtonTitles: nil];
 		[warningMessage show];
+        
+    }
+
+    /*
+     * findNumPoints()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Show warning message
+     */
+    - (void) findNumPoints{
+        
+        //Update number points available
+        dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{    //Asyncronous
+            
+            //Data local
+            localLogger* localLog = [[localLogger alloc] init];
+            //Data on server
+            serverLogger* serverLog = [[serverLogger alloc] init];
+            
+            //Count total data
+            int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];
+            
+            //Update the text box
+            dispatch_async( dispatch_get_main_queue(), ^{
+                self.pointsAvailableLabel.text = [NSString stringWithFormat:@"%d", totalPoints];
+            });
+        });
         
     }
 

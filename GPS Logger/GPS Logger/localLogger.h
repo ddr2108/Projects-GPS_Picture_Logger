@@ -12,11 +12,10 @@
 
     - (id)init;
     - (BOOL) saveGPS: (double*)coordinates;
-    - (BOOL) deleteGPS;
+    - (BOOL) clearHistory;
     - (NSArray*) getLocations;
     - (int) getNumLocations;
-    - (void) sendToServer;
-
-
+    - (BOOL) sendToServer;
+    - (void) renameOld:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName;
 
 @end

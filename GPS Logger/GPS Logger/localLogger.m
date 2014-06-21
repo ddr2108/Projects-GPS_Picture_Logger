@@ -91,7 +91,7 @@
     }
 
     /*
-     * deleteGPS()
+     * clearHistory()
      *
      * parameters:
      * 	none
@@ -100,12 +100,27 @@
      *
      * Deletes from local all the GPS data assocated with this user/device
      */
-    - (BOOL) deleteGPS{
+    - (BOOL) clearHistory{
         
-        //Clear Data
-        logData = [[NSMutableArray alloc] init];
+        //Variables for keeping deleted items
+        NSMutableArray* removedLogData = [[NSMutableArray alloc] init];
+        
+        //Go through the points
+        for (int i = 0; i < [self getNumLocations]; i++){
+            
+            //Check if that point is from today
+            if ([date  isEqualToString:logData[4*i+2]]){
+                //Data to remove
+                [removedLogData addObject:logData[4*i+0]];
+                [removedLogData addObject:logData[4*i+1]];
+                [removedLogData addObject:logData[4*i+2]];
+                [removedLogData addObject:logData[4*i+3]];
+            }
+            
+        }
         
         //Store data to archive
+        [logData removeObjectsInArray:removedLogData];
         [NSKeyedArchiver archiveRootObject:logData toFile:logPath];
         
         //Return success
@@ -127,8 +142,14 @@
         
         //Correct the times
         for (int i = 3; i < [logData count]; i+=4){
-            //Fix teh time and replace in array
-            NSString* logTime = [NSString stringWithFormat:@"%ld:%02ld", [logData[i] longValue]/60, [logData[i] longValue]%60];
+            NSString* logTime;
+            //Check AM or PM
+            if (time/60>=12){
+                logTime = [NSString stringWithFormat:@"%ld:%02ldPM", (time/60)%12, time%60];
+            }else{
+                logTime = [NSString stringWithFormat:@"%ld:%02ldAM", (time/60)%12, time%60];
+            }
+
             [logData replaceObjectAtIndex:i withObject:logTime];
         }
         
@@ -160,11 +181,11 @@
      * parameters:
      * 	none
      * returns:
-     * 	none
+     * 	BOOL - whether sync succeeded or not
      *
      * Sends data in log to server
      */
-    - (void) sendToServer{
+    - (BOOL) sendToServer{
         
         //Variables for checking sync status
         BOOL sendFail = FALSE;
@@ -201,15 +222,56 @@
         
         //if all successful, update sync time
         if (sendFail == FALSE){
-            NSString *syncTime = [NSString stringWithFormat:@"%@ %ld:%02ld", date, time/60, time%60];
+            NSString *syncTime;
+            //Check AM or PM
+            if (time/60>=12){
+                syncTime = [NSString stringWithFormat:@"%@ %ld:%02ld PM", date, (time/60)%12, time%60];
+            }else{
+                syncTime = [NSString stringWithFormat:@"%@ %ld:%02ld AM", date, (time/60)%12, time%60];
+            }
             [defaults setObject:syncTime forKey:@"syncTime"];
         }
         
         //Store data to archive
         [logData removeObjectsInArray:removedLogData];
         [NSKeyedArchiver archiveRootObject:logData toFile:logPath];
+        
+        //return success
+        return !sendFail;
 
     }
 
+    /*
+     * renameOld(), forDevice
+     *
+     * parameters:
+     *  NSString* oldUserName - old user name
+     *  NSString* oldDeviceName - old device name
+     * returns:
+     * 	none
+     *
+     * Sends data in log to server
+     */
+    - (void) renameOld:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName{
+        //Rename file
+        NSString* newLogPath = [NSString stringWithFormat:@"%@-%@-%@", logPath, oldUserName, oldDeviceName];
+        
+        //Save File
+        [NSKeyedArchiver archiveRootObject:logData toFile:newLogPath];
+
+    }
+
+    /*
+     * saveOld()
+     *
+     * parameters:
+     *  none
+     * returns:
+     * 	none
+     *
+     * Save old data
+     */
+    - (void) saveOld{
+    }
 
 @end

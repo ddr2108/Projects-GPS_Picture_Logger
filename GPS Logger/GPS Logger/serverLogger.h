@@ -13,7 +13,7 @@
     - (id)init;
     - (BOOL) saveGPS: (double*)coordinates;
     - (BOOL) saveGPS: (double*)coordinates forDate:(NSString*)date forTime:(NSInteger)time;
-    - (BOOL) deleteGPS;
+    - (BOOL) clearHistory;
     - (NSArray*) getLocations;
     - (int) getNumLocations;
 

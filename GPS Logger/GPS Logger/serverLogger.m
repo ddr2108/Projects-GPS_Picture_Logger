@@ -118,7 +118,7 @@
     }
 
     /*
-     * deleteGPS()
+     * clearHistory()
      *
      * parameters:
      * 	none
@@ -127,12 +127,12 @@
      *
      * Deletes from server all the GPS data assocated with this user/device
      */
-    - (BOOL) deleteGPS {
+    - (BOOL) clearHistory {
         
         //Create the request
         NSString* base = @"deleteGPS.php";
-        NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", nil];
-        NSArray* data = [NSArray arrayWithObjects: userName, deviceName, nil];
+        NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", @"date", @"deleteID", nil];
+        NSArray* data = [NSArray arrayWithObjects: userName, deviceName, date, @"-1",nil];
         NSMutableURLRequest *request = [self generateRequest:base forParameters:parameters forData:data];
         
         //Get data from request

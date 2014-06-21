@@ -32,6 +32,10 @@
     */
     - (void)viewDidLoad{
         [super viewDidLoad];
+        
+        //Set up bring app back to active
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appReturnsActive:) name:UIApplicationWillEnterForegroundNotification object:NULL];
+
     }
 
     /*
@@ -45,14 +49,60 @@
      * Create the map
      */
     - (void)viewDidAppear:(BOOL)animated{
-        
+        [super viewDidAppear:animated];
+
+        //Set up the view
+        [self setUpView];
+    }
+
+    /*
+     * appReturnsActive()
+     *
+     * parameters:
+     * 	NSNotification* notification -  app came to foreground notification
+     * returns:
+     * 	none
+     *
+     * Initialize view for gui
+     */
+    - (void)appReturnsActive:(NSNotification *)notification{
+        //Set up the view
+        [self setUpView];
+    }
+
+    /*
+     * didReceiveMemoryWarning()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Memory cleaning
+     */
+    - (void)didReceiveMemoryWarning{
+        [super didReceiveMemoryWarning];
+    }
+
+    /*
+     * setUpView()
+     *
+     * parameters:
+     * 	none
+     * returns:
+     * 	none
+     *
+     * Create the map
+     */
+    - (void) setUpView{
+       
         //Clear current data
         [_mapView removeAnnotations:_mapView.annotations];
         _mapView.delegate = self;
         
         //Get local data
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
+            
             //Create object for getting local logs
             localLogger *localLog = [[localLogger alloc] init];
             //Get Location Data locally
@@ -75,7 +125,7 @@
             [self mapPoints:serverData];
             
         });
-
+        
     }
 
     /*
@@ -109,13 +159,12 @@
             //Create the point
             lastPoints = [[MKPointAnnotation alloc] init];
             lastPoints.coordinate = lastCoordinates;
-            lastPoints.title = [NSString stringWithFormat:@"%@ %@", data[i+2], data[i+3]];
+            lastPoints.title = [NSString stringWithFormat:@"%@ %@", [self createDate:data[i+2]], data[i+3]];
             
             //Print point on map
             dispatch_async( dispatch_get_main_queue(), ^{
                 [_mapView addAnnotation:lastPoints];
             });
-            
             
         }
         
@@ -127,18 +176,52 @@
         
     }
 
-    /*
-     * didReceiveMemoryWarning()
-     *
-     * parameters:
-     * 	none
-     * returns:
-     * 	none
-     *
-     * Memory cleaning
-     */
-    - (void)didReceiveMemoryWarning{
-        [super didReceiveMemoryWarning];
+/*
+ * createDate()
+ *
+ * parameters:
+ * 	NSString* date - '-' version of date
+ * returns:
+ * 	NSString* - date in text form
+ *
+ * Actually map out the points
+ */
+- (NSString*) createDate:(NSString*) date{
+    NSArray* dateComponents = [date componentsSeparatedByString:@"-"];
+    
+    //Find the month
+    NSString* month;
+    if ([dateComponents[0] integerValue]==1){
+        month = @"January";
+    }else if ([dateComponents[0] integerValue]==2){
+        month = @"February";
+    }else if ([dateComponents[0] integerValue]==3){
+         month = @"March";
+    }else if ([dateComponents[0] integerValue]==4){
+        month = @"April";
+    }else if ([dateComponents[0] integerValue]==5){
+        month = @"May";
+    }else if ([dateComponents[0] integerValue]==6){
+        month = @"June";
+    }else if ([dateComponents[0] integerValue]==7){
+        month = @"July";
+    }else if ([dateComponents[0] integerValue]==8){
+        month = @"August";
+    }else if ([dateComponents[0] integerValue]==9){
+        month = @"September";
+    }else if ([dateComponents[0] integerValue]==10){
+        month = @"October";
+    }else if ([dateComponents[0] integerValue]==11){
+        month = @"November";
+    }else if ([dateComponents[0] integerValue]==12){
+        month = @"December";
     }
+
+    //Create and return date
+    return [NSString stringWithFormat:@"%@ %ld, %ld", month, (long)[dateComponents[1] integerValue], (long)[dateComponents[2] integerValue]];
+    
+}
+
+
 
 @end
