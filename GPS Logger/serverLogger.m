@@ -76,10 +76,10 @@
         double latitude = coordinates[1];
 
         //Create the request
-        NSString* base = @"save_gps.php";
+        NSString* base = @"saveGPS.php";
         NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", @"date", @"time", @"longitude", @"latitude", nil];
         NSArray* data = [NSArray arrayWithObjects: userName, deviceName, date, [NSString stringWithFormat:@"%ld", time], [NSString stringWithFormat:@"%f", longitude], [NSString stringWithFormat:@"%f", latitude],nil];
-        NSString *request = [self generateRequest:base forParameters:parameters forData:data];
+        NSMutableURLRequest *request = [self generateRequest:base forParameters:parameters forData:data];
         
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
@@ -130,10 +130,10 @@
     - (BOOL) deleteGPS {
         
         //Create the request
-        NSString* base = @"delete_gps.php";
+        NSString* base = @"deleteGPS.php";
         NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", nil];
         NSArray* data = [NSArray arrayWithObjects: userName, deviceName, nil];
-        NSString *request = [self generateRequest:base forParameters:parameters forData:data];
+        NSMutableURLRequest *request = [self generateRequest:base forParameters:parameters forData:data];
         
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
@@ -161,10 +161,10 @@
     - (NSArray*) getLocations {
     
         //Create the request
-        NSString* base = @"get_locations.php";
+        NSString* base = @"getLocations.php";
         NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", @"date", @"daysHistory", nil];
         NSArray* data = [NSArray arrayWithObjects: userName, deviceName, date, [NSString stringWithFormat:@"%ld", daysHistory], nil];
-        NSString *request = [self generateRequest:base forParameters:parameters forData:data];
+        NSMutableURLRequest *request = [self generateRequest:base forParameters:parameters forData:data];
 
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
@@ -187,10 +187,10 @@
     - (int) getNumLocations {
         
         //Create the request
-        NSString* base = @"get_locations.php";
+        NSString* base = @"getLocations.php";
         NSArray* parameters =[NSArray arrayWithObjects: @"userName", @"deviceName", @"date", @"daysHistory", nil];
         NSArray* data = [NSArray arrayWithObjects: userName, deviceName, date, @"-1", nil];
-        NSString *request = [self generateRequest:base forParameters:parameters forData:data];
+        NSMutableURLRequest *request = [self generateRequest:base forParameters:parameters forData:data];
 
         //Get data from request
         NSData *urlReturn = [self processRequest:request];
@@ -213,22 +213,34 @@
      *  NSArray* parameters - parameters
      *  NSArray* data - the actual data
      * returns:
-     * 	NSString* request - the request url
+     * 	NSMutableURLRequest* request - the request url
      *
      * Process the request
      */
-    -(NSString*) generateRequest: (NSString*)page forParameters: (NSArray*)parameters forData: (NSArray*)data{
+    -(NSMutableURLRequest*) generateRequest: (NSString*)page forParameters: (NSArray*)parameters forData: (NSArray*)data{
         //Base URL
         NSString *baseURL = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/"];
+        //Will be request url
+        NSString *URL = [baseURL stringByAppendingString:[NSString stringWithFormat:@"%@", page]];
         
-        //Will be final request
-        NSString *request = [baseURL stringByAppendingString:[NSString stringWithFormat:@"%@?", page]];
-        
+        //Create post part of request
+        NSString *post = [NSString stringWithFormat:@"%@=%@", parameters[0], data[0]];
         //Parse through data and generate final url
-        request = [request stringByAppendingString:[NSString stringWithFormat:@"%@=%@", parameters[0], data[0]]];
         for (int i = 1; i < [parameters count]; i++) {
-            request = [request stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", parameters[i], data[i]]];
+            post = [post stringByAppendingString:[NSString stringWithFormat:@"&%@=%@", parameters[i], data[i]]];
         }
+        NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+
+        //Create the request
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:URL]
+                                                                    cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                                    timeoutInterval:1];
+        
+        //Set up the request
+        [request setHTTPMethod:@"POST"];
+        [request setValue:[NSString stringWithFormat:@"%lu", [post length]] forHTTPHeaderField:@"Content-Length"];
+        [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:postData];
 
         return request;
     }
@@ -237,27 +249,20 @@
      * processRequest()
      *
      * parameters:
-     * 	NSString* request - the request url
+     * 	NSMutableURLRequest* request - the request url
      * returns:
      * 	NSData* - data returned by request
      *
      * Process the request
      */
-    - (NSData*) processRequest: (NSString*) request{
-        
-        //Create url
-        NSURL *url = [NSURL URLWithString:request];
-        NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:url
-                                                                cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                                                timeoutInterval:1];
-        [urlRequest setHTTPMethod: @"GET"];
+    - (NSData*) processRequest: (NSMutableURLRequest*) request{
         
         //Create parts of reponse
         NSError *urlError = NULL;
         NSURLResponse *urlResponse = NULL;
         
         //Return response
-        return [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&urlResponse error:&urlError];
+        return [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&urlError];
 
     }
 

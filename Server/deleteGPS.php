@@ -1,8 +1,8 @@
 <?php
 
 //Get data
-$userName = $_GET['userName'];
-$deviceName = $_GET['deviceName'];
+$userName = $_POST['userName'];
+$deviceName = $_POST['deviceName'];
 
 //Open connection with db
 $con=mysqli_connect("localhost","deep","siddhartha","GPS_Logger");
@@ -13,8 +13,10 @@ if (mysqli_connect_errno()) {
 //Delete db
 mysqli_query($con,"DELETE FROM GPS_Data WHERE userName='$userName' AND deviceName='$deviceName'");
 
-
 //Close connection
 mysqli_close($con);
+
+//Tell it was deleted
+echo "Deleted";
 
 ?>
