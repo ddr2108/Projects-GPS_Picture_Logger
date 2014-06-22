@@ -101,17 +101,21 @@
      * 	double* coordinates - array with [longitude latitude]
      *  NSString* date - date to insert
      *  NSInteger time - time to insert
+     *  NSString* userName - user name to insert
+     *  NSString* deviceName - device name to insert
      * returns:
      * 	boolean - true if data inserted
      *
      * Saves the GPS data to the server
      */
-    - (BOOL) saveGPS: (double*)coordinates forDate:(NSString*)oldDate forTime:(NSInteger)oldTime {
-        
+    - (BOOL) saveGPS: (double*)coordinates forDate:(NSString*)oldDate forTime:(NSInteger)oldTime forUserName:(NSString*)oldUserName forDeviceName:(NSString*)oldDeviceName{
+    
         //Save the modified date/time
         date = oldDate;
         time = oldTime;
-        
+        userName = oldUserName;
+        deviceName = oldDeviceName;
+    
         //Call normal saving function
         return [self saveGPS:coordinates];
         

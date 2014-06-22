@@ -15,10 +15,10 @@
     - (BOOL) clearHistory;
     - (NSArray*) getLocations;
     - (int) getNumLocations;
-    - (BOOL) sendToServer;
-    - (void) renameOld:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName;
-    - (void) recoverOld;
-    - (void) saveOld;
+    - (BOOL) sendToServer:(BOOL)syncTimeSave;
+    - (void) renameOldLog:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName;
+    - (void) recoverOldLog;
+    - (void) saveOldLog;
 
 
 @end

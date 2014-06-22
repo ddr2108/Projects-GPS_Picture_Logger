@@ -143,8 +143,8 @@
         //Create object for local logging
         localLogger* localLog = [[localLogger alloc] init];
         //Sync data
-        bool syncSuccess = [localLog sendToServer];
-        [localLog saveOld];
+        bool syncSuccess = [localLog sendToServer:TRUE];
+        [localLog saveOldLog];
 
         //Adjust the sync time if needed
         NSString* syncTime = [defaults objectForKey:@"syncTime"];
@@ -205,16 +205,21 @@
         //Get the new name
         NSString* userName = [self.userNameTextBox text];
         
+        //if not changed, dont do anything
+        if ([userName isEqualToString:[defaults objectForKey:@"userName"]]){
+            return;
+        }
+        
         //Create new log file for user
         localLogger* localLog = [[localLogger alloc] init];
-        [localLog renameOld:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
+        [localLog renameOldLog:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
         
         //Store into defaults
         [defaults setObject:userName forKey:@"userName"];
         
         //Try to revoer data
         localLog = [[localLogger alloc] init];
-        [localLog recoverOld];
+        [localLog recoverOldLog];
         
         //Get a new count for points
         [self findNumPoints];
@@ -235,16 +240,21 @@
         //Get the new name
         NSString* deviceName = [self.deviceNameTextBox text];
         
+        //if not changed, dont do anything
+        if ([deviceName isEqualToString:[defaults objectForKey:@"deviceName"]]){
+            return;
+        }
+        
         //Create new log file for user
         localLogger* localLog = [[localLogger alloc] init];
-        [localLog renameOld:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
+        [localLog renameOldLog:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
         
         //Store into defaults
         [defaults setObject:deviceName forKey:@"deviceName"];
         
         //Try to revoer data
         localLog = [[localLogger alloc] init];
-        [localLog recoverOld];
+        [localLog recoverOldLog];
         
         //Get a new count for points
         [self findNumPoints];

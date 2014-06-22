@@ -182,8 +182,8 @@
             //Create local logger
             localLogger* localLog = [[localLogger alloc] init];
             //Save Data
-            [localLog sendToServer];
-            [localLog saveOld];
+            [localLog sendToServer:TRUE];
+            [localLog saveOldLog];
             
         }
         

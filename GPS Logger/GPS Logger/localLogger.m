@@ -150,9 +150,9 @@
             NSString* logTime;
             //Check AM or PM
             if (time/60>=12){
-                logTime = [NSString stringWithFormat:@"%ld:%02ldPM", (time/60)%12, time%60];
+                logTime = [NSString stringWithFormat:@"%ld:%02ldPM", ([logData[i] integerValue]/60)%12, [logData[i] integerValue]%60];
             }else{
-                logTime = [NSString stringWithFormat:@"%ld:%02ldAM", (time/60)%12, time%60];
+                logTime = [NSString stringWithFormat:@"%ld:%02ldAM", ([logData[i] integerValue]/60)%12, [logData[i] integerValue]%60];
             }
 
             [logData replaceObjectAtIndex:i withObject:logTime];
@@ -184,14 +184,14 @@
      * sendToServer()
      *
      * parameters:
-     * 	none
+     * 	BOOL syncTimeSave - whether to save syn time
      * returns:
      * 	BOOL - whether sync succeeded or not
      *
      * Sends data in log to server
      */
-    - (BOOL) sendToServer{
-        
+    - (BOOL) sendToServer:(BOOL)syncTimeSave{
+    
         //Variables for checking sync status
         BOOL sendFail = FALSE;
         NSMutableArray* removedLogData = [[NSMutableArray alloc] init];
@@ -208,7 +208,7 @@
             NSInteger oldTime = [logData[4*i+3] integerValue];
 
             //Save Data
-            BOOL insertSuccess = [serverLog saveGPS:coordinates forDate:oldDate forTime:oldTime];
+            BOOL insertSuccess = [serverLog saveGPS:coordinates forDate:oldDate forTime:oldTime forUserName:userName forDeviceName:deviceName];
             
             //Check if insertion was a success
             if (insertSuccess==FALSE){
@@ -247,7 +247,7 @@
     }
 
     /*
-     * renameOld(), forDevice
+     * renameOldLog(), forDevice
      *
      * parameters:
      *  NSString* oldUserName - old user name
@@ -257,7 +257,7 @@
      *
      * Renames a local log file
      */
-    - (void) renameOld:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName{
+    - (void) renameOldLog:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName{
         //Rename file
         NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString* oldLogPath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@-%@.archive", oldUserName, oldDeviceName]]];
@@ -277,7 +277,7 @@
         //Add to list of old files
         [filesPathData addObject: oldUserName];
         [filesPathData addObject: oldDeviceName];
-        
+
         //Store data to archive
         [NSKeyedArchiver archiveRootObject:filesPathData toFile:filesPath];
         
@@ -287,7 +287,7 @@
     }
 
     /*
-     * recoverOld()
+     * recoverOldLog()
      *
      * parameters:
      *  none
@@ -296,7 +296,7 @@
      *
      * Try to recover old data not uploaded to server
      */
-    - (void) recoverOld{
+    - (void) recoverOldLog{
         //Get path of possible old file
         NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString* oldLogPath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@-%@.archive", userName, deviceName]]];
@@ -308,6 +308,8 @@
         //if file does not exists
         if (oldLogData==NULL){
             oldLogData = [[NSMutableArray alloc] init];
+        }else{
+            [[NSFileManager defaultManager] removeItemAtPath:oldLogPath error:NULL];
         }
         
         //Save to log
@@ -315,7 +317,7 @@
     }
 
     /*
-     * saveOld()
+     * saveOldLog()
      *
      * parameters:
      *  none
@@ -324,7 +326,7 @@
      *
      * Save old data
      */
-    - (void) saveOld{
+    - (void) saveOldLog{
         //Open file with list of old files
         NSArray* dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString* filesPath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent:@"paths.archive"]];
@@ -333,7 +335,7 @@
         
         BOOL saveSuccess;
         //Go through all possible paths
-        for (int i = 0; i < [filesPathData count] - 1; i+=2){
+        for (int i = 0; i < ([filesPathData count]); i+=2){
             
             //Pull out names
             userName = filesPathData[i];
@@ -342,7 +344,7 @@
             //Pull out paths and open files
             logPath = [[NSString alloc] initWithString: [dirPaths[0] stringByAppendingPathComponent: [NSString stringWithFormat:@"%@-%@.archive", userName, deviceName]]];
             logData = [NSKeyedUnarchiver unarchiveObjectWithFile:logPath];
-            
+
             //If no data
             if (logData==NULL){
                 [removedFilesPathData addObject:filesPathData[i]];
@@ -350,9 +352,8 @@
                 continue;
             }
             
-            
             //Save to server
-            saveSuccess = [self sendToServer];
+            saveSuccess = [self sendToServer:FALSE];
             //If successful, delete from list
             if (saveSuccess){
                 [removedFilesPathData addObject:filesPathData[i]];
