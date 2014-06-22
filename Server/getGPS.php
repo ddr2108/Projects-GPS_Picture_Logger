@@ -10,7 +10,7 @@ $deltaTime = $_POST['deltaTime'];
 //Open connection with db
 $con=mysqli_connect("localhost","deep","siddhartha","GPS_Logger");
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    die('Connect Error: ' . $mysqli->connect_errno);
 }
 
 //Get data from db - all for that user/device from specific day

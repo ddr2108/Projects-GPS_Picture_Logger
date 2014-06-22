@@ -9,7 +9,7 @@ $daysHistory = $_POST['daysHistory'];
 //Open connection with db
 $con=mysqli_connect("localhost","deep","siddhartha","GPS_Logger");
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    die('Connect Error: ' . $mysqli->connect_errno);
 }
 
 //If want all history
@@ -42,7 +42,12 @@ if ($daysHistory==-1){
 			//Calcualte timestamp
 			$hour = floor($row['time']/60);
 			$min = $row['time']%60;
-			$timeString = sprintf('%d:%02d', $hour, $min);
+			//Calculate AM or PM
+			if ($hour>=12){	
+				$timeString = sprintf('%d:%02dPM', $hour%12, $min);
+			}else{
+				$timeString = sprintf('%d:%02dAM', $hour%12, $min);
+			}
 
 			echo $row['longitude'] . " ";
 			echo $row['latitude'] . " ";

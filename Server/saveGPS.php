@@ -11,7 +11,7 @@ $latitude = $_POST["latitude"];
 //Open connection with db
 $con=mysqli_connect("localhost","deep","siddhartha","GPS_Logger");
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    die('Connect Error: ' . $mysqli->connect_errno);
 }
 
 //Insert into db
