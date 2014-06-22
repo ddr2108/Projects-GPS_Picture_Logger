@@ -39,7 +39,7 @@
         self->locationManager = [[CLLocationManager alloc] init];
         self->locationManager.delegate = self;
         
-        [self autoLogSetup];
+        [self autoLogSetup: 1];
         
         return YES;
     }
@@ -76,18 +76,23 @@
      * autoLogSetup()
      *
      * parameters:
-     * 	none
+     * 	int startupFlag - flag of where this setup comes from, 1 from app startup, 0 else
      * returns:
      * 	none
      *
      * Determine whether to turn on auto log and set it up
      */
-    - (void) autoLogSetup{
+    - (void) autoLogSetup:(int) startupFlag{
+    
+        //If there is a timer already, and this fx is being called at startup, don't continue
+        if (startupFlag==1 && [repeatTimer isValid]){
+            return;
+        }
         
         //Remove old timers
         [repeatTimer invalidate];
         repeatTimer = NULL;
-        
+
         //Check if supposed to do autologging
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
         long autoLog = [[defaults objectForKey:@"autoLog"] integerValue];
@@ -118,6 +123,9 @@
             [self->locationManager stopUpdatingLocation];
         }
         
+        //Say time to log
+        logFlag = 1;
+    
     }
 
     /*
@@ -175,6 +183,7 @@
             localLogger* localLog = [[localLogger alloc] init];
             //Save Data
             [localLog sendToServer];
+            [localLog saveOld];
             
         }
         

@@ -12,6 +12,6 @@
 
     @property (strong, nonatomic) UIWindow *window;
 
-    - (void) autoLogSetup;
+    - (void) autoLogSetup:(int)startupFlag;
 
 @end

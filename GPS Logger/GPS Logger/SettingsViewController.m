@@ -144,7 +144,8 @@
         localLogger* localLog = [[localLogger alloc] init];
         //Sync data
         bool syncSuccess = [localLog sendToServer];
-        
+        [localLog saveOld];
+
         //Adjust the sync time if needed
         NSString* syncTime = [defaults objectForKey:@"syncTime"];
         self.syncTimeLabel.text = syncTime;
@@ -211,6 +212,10 @@
         //Store into defaults
         [defaults setObject:userName forKey:@"userName"];
         
+        //Try to revoer data
+        localLog = [[localLogger alloc] init];
+        [localLog recoverOld];
+        
         //Get a new count for points
         [self findNumPoints];
     }
@@ -236,6 +241,10 @@
         
         //Store into defaults
         [defaults setObject:deviceName forKey:@"deviceName"];
+        
+        //Try to revoer data
+        localLog = [[localLogger alloc] init];
+        [localLog recoverOld];
         
         //Get a new count for points
         [self findNumPoints];
@@ -269,7 +278,7 @@
         
         //Contact app delegate to fix up logging
         AppDelegate *appDelegate= [[UIApplication sharedApplication] delegate];
-        [appDelegate autoLogSetup];
+        [appDelegate autoLogSetup:0];
 
     }
 
@@ -323,7 +332,7 @@
         
         //Contact app delegate to fix up logging
         AppDelegate *appDelegate= [[UIApplication sharedApplication] delegate];
-        [appDelegate autoLogSetup];
+        [appDelegate autoLogSetup:0];
 
 
     }

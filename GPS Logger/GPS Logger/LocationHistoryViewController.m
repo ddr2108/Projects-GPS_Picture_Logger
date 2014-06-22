@@ -176,51 +176,51 @@
         
     }
 
-/*
- * createDate()
- *
- * parameters:
- * 	NSString* date - '-' version of date
- * returns:
- * 	NSString* - date in text form
- *
- * Actually map out the points
- */
-- (NSString*) createDate:(NSString*) date{
-    NSArray* dateComponents = [date componentsSeparatedByString:@"-"];
-    
-    //Find the month
-    NSString* month;
-    if ([dateComponents[0] integerValue]==1){
-        month = @"January";
-    }else if ([dateComponents[0] integerValue]==2){
-        month = @"February";
-    }else if ([dateComponents[0] integerValue]==3){
-         month = @"March";
-    }else if ([dateComponents[0] integerValue]==4){
-        month = @"April";
-    }else if ([dateComponents[0] integerValue]==5){
-        month = @"May";
-    }else if ([dateComponents[0] integerValue]==6){
-        month = @"June";
-    }else if ([dateComponents[0] integerValue]==7){
-        month = @"July";
-    }else if ([dateComponents[0] integerValue]==8){
-        month = @"August";
-    }else if ([dateComponents[0] integerValue]==9){
-        month = @"September";
-    }else if ([dateComponents[0] integerValue]==10){
-        month = @"October";
-    }else if ([dateComponents[0] integerValue]==11){
-        month = @"November";
-    }else if ([dateComponents[0] integerValue]==12){
-        month = @"December";
-    }
+    /*
+     * createDate()
+     *
+     * parameters:
+     * 	NSString* date - '-' version of date
+     * returns:
+     * 	NSString* - date in text form
+     *
+     * Actually map out the points
+     */
+    - (NSString*) createDate:(NSString*) date{
+        NSArray* dateComponents = [date componentsSeparatedByString:@"-"];
+        
+        //Find the month
+        NSString* month;
+        if ([dateComponents[0] integerValue]==1){
+            month = @"January";
+        }else if ([dateComponents[0] integerValue]==2){
+            month = @"February";
+        }else if ([dateComponents[0] integerValue]==3){
+             month = @"March";
+        }else if ([dateComponents[0] integerValue]==4){
+            month = @"April";
+        }else if ([dateComponents[0] integerValue]==5){
+            month = @"May";
+        }else if ([dateComponents[0] integerValue]==6){
+            month = @"June";
+        }else if ([dateComponents[0] integerValue]==7){
+            month = @"July";
+        }else if ([dateComponents[0] integerValue]==8){
+            month = @"August";
+        }else if ([dateComponents[0] integerValue]==9){
+            month = @"September";
+        }else if ([dateComponents[0] integerValue]==10){
+            month = @"October";
+        }else if ([dateComponents[0] integerValue]==11){
+            month = @"November";
+        }else if ([dateComponents[0] integerValue]==12){
+            month = @"December";
+        }
 
-    //Create and return date
-    return [NSString stringWithFormat:@"%@ %ld, %ld", month, (long)[dateComponents[1] integerValue], (long)[dateComponents[2] integerValue]];
-    
-}
+        //Create and return date
+        return [NSString stringWithFormat:@"%@ %ld, %ld", month, (long)[dateComponents[1] integerValue], (long)[dateComponents[2] integerValue]];
+        
+    }
 
 
 

@@ -17,5 +17,8 @@
     - (int) getNumLocations;
     - (BOOL) sendToServer;
     - (void) renameOld:(NSString*)oldUserName forDevice:(NSString*)oldDeviceName;
+    - (void) recoverOld;
+    - (void) saveOld;
+
 
 @end
