@@ -195,69 +195,64 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
         File tempFile = null;		//new file	
     	OutputStream os = null;		//stream to write to file
         boolean canThrow = false;	//throw exceptions
+        TiffOutputSet outputSet = null;
+
+        //Get metadata from picture
+        final IImageMetadata metadata = Imaging.getMetadata(file);
+        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
         
-        try {
-            TiffOutputSet outputSet = null;
+        //If there is metadata
+        if (null != jpegMetadata) {
 
-            //Get metadata from picture
-            final IImageMetadata metadata = Imaging.getMetadata(file);
-            final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
-            
-            //If there is metadata
-            if (null != jpegMetadata) {
-
-            	//get the exif data
-            	final TiffImageMetadata exif = jpegMetadata.getExif();
-                if (exif != null) {
-                    outputSet = exif.getOutputSet();
-                }
+        	//get the exif data
+        	final TiffImageMetadata exif = jpegMetadata.getExif();
+            if (exif != null) {
+                outputSet = exif.getOutputSet();
             }
-
-            //if there is no exif metadata, then return
-            if (outputSet == null) {
-            	return;
-            }
-
-            //Get the timestamp
-            String[] dateTime = getTime(jpegMetadata);
-            //Return if no timestamp
-            if (dateTime == null){
-            	return;
-            }
-            
-            //Get coordinates
-            double[] coordinates = getCoordinates(dateTime);
-            //Return if no coordinates
-            if (coordinates == null){
-            	return;
-            }
-            
-            //Set coordinates
-            outputSet.setGPSInDegrees(coordinates[0], coordinates[1]);
-            
-            //create new file for use as temp for recording gps
-            tempFile = new File(file.getAbsolutePath() + "-2");		
-            
-            //Create a stream to write to the file
-            os = new FileOutputStream(tempFile);
-            os = new BufferedOutputStream(os);
-            new ExifRewriter().updateExifMetadataLossless(file, os, outputSet);
-
-            //enable exceptions
-            canThrow = true;
-            
-        } finally {
-        	//close the stream
-            IoUtils.closeQuietly(canThrow, os);
-            
-            //Rename file to get original
-            String originalPath = file.getAbsolutePath();
-            file.delete();
-            File tempFileRename = new File(originalPath);	
-            tempFile.renameTo(tempFileRename);
-
         }
-    	
+
+        //if there is no exif metadata, then return
+        if (outputSet == null) {
+        	return;
+        }
+
+        //Get the timestamp
+        String[] dateTime = getTime(jpegMetadata);
+        //Return if no timestamp
+        if (dateTime == null){
+        	return;
+        }
+        
+        //Get coordinates
+        double[] coordinates = getCoordinates(dateTime);
+        //Return if no coordinates
+        if (coordinates[0] == 0 && coordinates[1] == 0){
+        	return;
+        }
+
+        //Set coordinates
+        outputSet.setGPSInDegrees(coordinates[0], coordinates[1]);
+        
+        //create new file for use as temp for recording gps
+        tempFile = new File(file.getAbsolutePath() + "-2");		
+        
+        //Create a stream to write to the file
+        os = new FileOutputStream(tempFile);
+        os = new BufferedOutputStream(os);
+        new ExifRewriter().updateExifMetadataLossless(file, os, outputSet);
+
+        //enable exceptions
+        canThrow = true;
+        
+        //close the stream
+        IoUtils.closeQuietly(canThrow, os);
+        
+        //Rename file to get original
+        String originalPath = file.getAbsolutePath();
+        file.delete();
+        File tempFileRename = new File(originalPath);	
+        tempFile.renameTo(tempFileRename);
+
 	}
 
 	/*
@@ -317,50 +312,49 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
     	
     	//Generate URL
     	String baseURL = "http://deepdattaroy.com/other/projects/GPS%20Logger/getGPS.php";
-    	String urlParameters = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + "6-22-2014" + "&time=" + "618" + "&deltaTime=" + deltaTime;
+    	String urlParameters = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + date + "&time=" + time + "&deltaTime=" + deltaTime;
     	
     	//Talk to server
-    	String response = "2.2 4.4";
+    	String response = "";
 		try {
-
-			//Create connection to server
-			URL obj = new URL(baseURL);
-	    	HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+	    	//Create connection to server
+			URL request = new URL(baseURL);
+	    	HttpURLConnection connection = (HttpURLConnection) request.openConnection();
 
 			//add request header
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", "Mozilla/5.0");
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+	    	connection.setRequestMethod("POST");
+	    	connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+	    	connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 	 
 			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+	    	connection.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
 			wr.writeBytes(urlParameters);
 			wr.flush();
 			wr.close();
 
 			//Read Reponse
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine = in.readLine();
-	    	System.out.println(inputLine);
-
-			in.close();
+	    	BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    	response = responseReader.readLine();
+	    	System.out.println(response);
+	    	responseReader.close();
 		} catch (IOException e) {
 			return null;
 		}  	
-    	System.out.println("asD");
-
+    	
+		//Get pieces of reponse
         String[] coordinatesTokens = response.split("[ ]+");
-		
+      
+        //No data found
+    	if (coordinatesTokens.length==0){
+    		coordinates[0] = 0;
+    		coordinates[1] = 0;
+    		return coordinates;
+    	}
+    	
     	//Get the coordinates
     	coordinates[0] = Double.parseDouble(coordinatesTokens[0]);
     	coordinates[1] = Double.parseDouble(coordinatesTokens[1]);
-    	
-    	
-    	//No data found
-    	if (coordinates[0]==0){
-    		return null;
-    	}
     	
     	return coordinates;
     }

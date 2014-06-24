@@ -315,7 +315,7 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
     	String urlParameters = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + date + "&time=" + time + "&deltaTime=" + deltaTime;
     	
     	//Talk to server
-    	String response = "3 3";
+    	String response = "";
 		try {
 	    	//Create connection to server
 			URL request = new URL(baseURL);
