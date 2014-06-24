@@ -31,7 +31,7 @@ public class UserName extends JPanel{
 	}
 	
 	/*
-	* getName()
+	* getUserName()
 	*
 	* parameters: 
 	* 	none

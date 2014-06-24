@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
@@ -45,6 +46,7 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 	UserName userNamePanel;
 	DeviceName deviceNamePanel;
 	TimeInterval timerIntervalPanel;
+	TimeDifference timeDifferencePanel;
 	
 	/*
 	* main()
@@ -113,12 +115,14 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 		userNamePanel = new UserName();
 		deviceNamePanel = new DeviceName();
 		timerIntervalPanel = new TimeInterval();
+		timeDifferencePanel = new TimeDifference();
 
 		//Set up frame
 		guiFrame.add(directoryPanel);
 		guiFrame.add(userNamePanel);
 		guiFrame.add(deviceNamePanel);
 		guiFrame.add(timerIntervalPanel);
+		guiFrame.add(timeDifferencePanel);
 		guiFrame.add(this);
 		
 		//make sure the JFrame is visible
@@ -232,7 +236,6 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 
         //Set coordinates
         outputSet.setGPSInDegrees(coordinates[0], coordinates[1]);
-        
         //create new file for use as temp for recording gps
         tempFile = new File(file.getAbsolutePath() + "-2");		
         
@@ -255,17 +258,17 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 
 	}
 
-	/*
-	* getTime()
+    /*
+	* shiftTime()
 	*
 	* parameters: 
 	* 	final JpegImageMetadata jpegMetadata - jpeg metadata
 	* returns: 
-	* 	String - time/data info
+	* 	Calendar - calander of time
 	* 
 	* get the time in pic
 	*/
-    private String[] getTime(final JpegImageMetadata jpegMetadata){
+    private Calendar shiftTime(final JpegImageMetadata jpegMetadata){
     	
     	//Get that field of metadata
         final TiffField field = jpegMetadata.findEXIFValueWithExactMatch(TiffTagConstants.TIFF_TAG_DATE_TIME);
@@ -279,9 +282,44 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
         String timestamp = field.getValueDescription();
         String[] timestampTokens = timestamp.split("[ :']+");
         
+        //Generate date and time of picture
+        Calendar picTime = Calendar.getInstance();
+        picTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timestampTokens[4]));
+        picTime.set(Calendar.MINUTE, Integer.parseInt(timestampTokens[5]));
+        picTime.set(Calendar.SECOND, Integer.parseInt(timestampTokens[6]));
+        picTime.set(Calendar.DAY_OF_MONTH, Integer.parseInt(timestampTokens[3]));
+        picTime.set(Calendar.MONTH, Integer.parseInt(timestampTokens[2])-1);
+        picTime.set(Calendar.YEAR, Integer.parseInt(timestampTokens[1]));
+        
+        //Generate new time
+        picTime.add( Calendar.HOUR, Integer.parseInt(timeDifferencePanel.getTimeDifference()));
+        
+        //return calander
+        return picTime;
+    }
+    
+	/*
+	* getTime()
+	*
+	* parameters: 
+	* 	final JpegImageMetadata jpegMetadata - jpeg metadata
+	* returns: 
+	* 	String[] - time/data info
+	* 
+	* get the time in pic
+	*/
+    private String[] getTime(final JpegImageMetadata jpegMetadata){
+    	
+    	Calendar shiftedTime = shiftTime(jpegMetadata);
+    	
+        //Return data if available; otherwise return null
+        if (shiftedTime == null){
+        	return null;
+        }
+        
         //Generate date and time
-        int time = Integer.parseInt(timestampTokens[4])*60 + Integer.parseInt(timestampTokens[5]);
-        String date = Integer.parseInt(timestampTokens[2]) + "-" + Integer.parseInt(timestampTokens[3]) + "-" + Integer.parseInt(timestampTokens[1]);
+        int time = shiftedTime.get(Calendar.HOUR_OF_DAY)*60 + shiftedTime.get(Calendar.MINUTE);
+        String date = (shiftedTime.get(Calendar.MONTH) + 1) + "-" + shiftedTime.get(Calendar.DAY_OF_MONTH) + "-" + shiftedTime.get(Calendar.YEAR);
 
         //Date Time info array
         String dateTime[] = {Integer.toString(time), date};
@@ -313,7 +351,7 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
     	//Generate URL
     	String baseURL = "http://deepdattaroy.com/other/projects/GPS%20Logger/getGPS.php";
     	String urlParameters = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + date + "&time=" + time + "&deltaTime=" + deltaTime;
-    	
+
     	//Talk to server
     	String response = "";
 		try {

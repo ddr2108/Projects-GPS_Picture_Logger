@@ -38,7 +38,7 @@ public class TimeInterval extends JPanel{
 	}
 	
 	/*
-	* getTime()
+	* getTimeInterval()
 	*
 	* parameters: 
 	* 	none
