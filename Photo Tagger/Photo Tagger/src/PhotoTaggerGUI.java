@@ -1,11 +1,12 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
 //Start button panel - starts all other panel
-public class PhotoTaggerGUI extends JPanel implements ActionListener{
+public class PhotoTaggerGUI extends JPanel {
 	
 	//Overall GUI
 	JFrame guiFrame;
@@ -16,11 +17,7 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 	DeviceName deviceNamePanel;
 	DeltaTime deltaTimePanel;
 	TimeDifference timeDifferencePanel;
-	
-	//Parts of the PhtoTaggerGUI Panel
-	JButton startButton;
-	JLabel progressLabel;
-	JLabel curProgressLabel;
+	Start startPanel;
 	
 	/*
 	* main()
@@ -51,23 +48,11 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 	*/
 	public PhotoTaggerGUI() {
 		
-		//Start button
-		startButton = new JButton("Start");
-		//Progress Label
-		JLabel progressLabel = new JLabel("Progress:");
-		//Current Progress Label
-		curProgressLabel = new JLabel("");
-
-		//Set up action listener
-		startButton.addActionListener(this);
-		
-		//Add to panel
-		this.add(startButton);
-		this.add(progressLabel);
-		this.add(curProgressLabel);
-		
 		//Set up rest of gui
 		setUpFrame();
+		
+		//Set up start panel
+		startPanel.setParamters(guiFrame, directoryPanel, userNamePanel, deviceNamePanel, deltaTimePanel, timeDifferencePanel);
 		
 	}
 	
@@ -83,128 +68,69 @@ public class PhotoTaggerGUI extends JPanel implements ActionListener{
 	*/
 	public void setUpFrame(){
 
-		//Set up frame
-		guiFrame = new JFrame();
-		guiFrame.setTitle("Photo Tagger");
-		guiFrame.setSize(1200, 200);
-		guiFrame.setLocationRelativeTo(null);
-		guiFrame.setLayout(new FlowLayout());
-		
 		//Get all the panels
 		directoryPanel = new Directory();
 		userNamePanel = new UserName();
 		deviceNamePanel = new DeviceName();
 		deltaTimePanel = new DeltaTime();
 		timeDifferencePanel = new TimeDifference();
+		startPanel = new Start();
+		
+		//Set up frame
+		guiFrame = new JFrame();
+		guiFrame.setTitle("Photo Tagger");
+		guiFrame.setSize(800, 160);
+		guiFrame.setLocationRelativeTo(null);
+		guiFrame.setLayout(new FlowLayout());
+		
+		//Set layout
+		this.setLayout(new GridBagLayout());
+
+		//Set up layout
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		
+
+		//Add to panel
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 5;
+		c.anchor = GridBagConstraints.EAST;
+		this.add(directoryPanel, c);
+		c.gridy++;
+		this.add(Box.createRigidArea(new Dimension(0,10)), c);
+		c.gridx = 0;
+		c.gridy++;
+		c.gridwidth = 2;
+		this.add(userNamePanel, c);		
+		c.gridx+=2;
+		c.gridwidth = 1;
+		this.add(Box.createRigidArea(new Dimension(30,0)), c);
+		c.gridx = 3;
+		c.gridwidth = 2;
+		this.add(deviceNamePanel, c);
+		c.gridy++;
+		this.add(Box.createRigidArea(new Dimension(0,10)), c);
+		c.gridx = 0;
+		c.gridy++;
+		this.add(deltaTimePanel, c);	
+		c.gridx+=3;
+		this.add(timeDifferencePanel, c);
+		c.gridy++;
+		this.add(Box.createRigidArea(new Dimension(0,10)), c);
+		c.gridx = 0;
+		c.gridy++;
+		c.gridwidth = 5;
+		this.add(startPanel, c);		
 
 		//Set up frame
-		guiFrame.add(directoryPanel);
-		guiFrame.add(userNamePanel);
-		guiFrame.add(deviceNamePanel);
-		guiFrame.add(deltaTimePanel);
-		guiFrame.add(timeDifferencePanel);
 		guiFrame.add(this);
 		
 		//make sure the JFrame is visible
         guiFrame.setVisible(true);
 	}
 	    
-    /*
-	* actionPerformed()
-	*
-	* parameters: 
-	* 	ActionEvent arg0 - default args
-	* returns: 
-	* 	none
-	* 
-	* run the program when start button pressed
-	*/
-	@Override
-	public void actionPerformed(ActionEvent e) {
 
-		//Start Processing
-		startProcessing();
-		
-	}
-    
-	/*
-	* startProcessing()
-	*
-	* parameters: 
-	* 	none
-	* returns: 
-	* 	none
-	* 
-	* Start the things necessary for processing
-	*/
-	public void startProcessing() {
-
-		//Get the parameters
-		String userName = userNamePanel.getUserName();
-		String deviceName = deviceNamePanel.getDeviceName();
-		String deltaTime = deltaTimePanel.getDeltaTime();
-		String timeDifference = timeDifferencePanel.getTimeDifference();
-		String directory = directoryPanel.getDirectory();
-
-		//Check for correctness
-		if (userName.length()==0){
-			JOptionPane.showMessageDialog(guiFrame, "Need a User Name");
-			curProgressLabel.setText("Parameter Error");
-			return;
-		}
-		if (deviceName.length()==0){
-			JOptionPane.showMessageDialog(guiFrame, "Need a Device Name");
-			curProgressLabel.setText("Parameter Error");
-			return;
-		}
-		if (isInteger(deltaTime)==false || Integer.parseInt(deltaTime)<0 || Integer.parseInt(deltaTime)>1440){
-			JOptionPane.showMessageDialog(guiFrame, "Delta Time needs to be an integer between 0 and 1440");
-			curProgressLabel.setText("Parameter Error");
-			return;
-		}
-		if (isInteger(timeDifference)==false){
-			JOptionPane.showMessageDialog(guiFrame, "Time Difference needs to be an integer");
-			curProgressLabel.setText("Parameter Error");
-			return;
-		}
-		if (directory.length()==0){
-			JOptionPane.showMessageDialog(guiFrame, "Need a Directory");
-			curProgressLabel.setText("Parameter Error");
-			return;
-		}
-
-		//Set the parameters
-		PhotoTagger photoTagger = new PhotoTagger();
-		photoTagger.setParameters(userName, deviceName, deltaTime, timeDifference);
-		photoTagger.setProgressLabel(curProgressLabel);
-		
-		//Start the processing
-		photoTagger.startProcessing(directory);		
-		
-	}
-	
-	/*
-	* isInteger()
-	*
-	* parameters: 
-	* 	String s - string to check
-	* returns: 
-	* 	boolean - true if it is
-	* 
-	* Check if string is an integer
-	*/
-	public static boolean isInteger(String s) {
-		
-	    //Try to parse the string
-		try { 
-	        Integer.parseInt(s); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-
-	    return true;
-	    
-	}
 }
 
 

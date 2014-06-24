@@ -1,0 +1,214 @@
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+//Start Panel for GUI
+@SuppressWarnings("serial")
+public class Start extends JPanel implements ActionListener{
+
+	//Overall GUI
+	JFrame guiFrame;
+	
+	//All the panels used
+	Directory directoryPanel;
+	UserName userNamePanel;
+	DeviceName deviceNamePanel;
+	DeltaTime deltaTimePanel;
+	TimeDifference timeDifferencePanel;
+
+	//Parts of the panel
+	JButton startButton;
+	JLabel progressLabel;
+	JLabel curProgressLabel;
+	
+	/*
+	* Start()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	* constructor - sets up gui for this panel
+	*/
+	public Start(){
+		
+		//Progress Label
+		progressLabel = new JLabel("Progress:");
+		//Current Progress Label
+		curProgressLabel = new JLabel("");
+		//Start button
+		startButton = new JButton("Start");
+
+		//Set up action listener
+		startButton.addActionListener(this);
+		
+		//Add to panel
+		this.add(startButton);
+		this.add(progressLabel);
+		this.add(curProgressLabel);
+				
+		//Set layout
+		this.setLayout(new GridBagLayout());
+		
+		//Set up layout
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		//Add to panel
+		c.gridx = 0;
+		c.gridy = 0;
+		this.add(startButton);
+		c.gridy++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridy++;
+		this.add(progressLabel, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridx++;
+		this.add(curProgressLabel, c);
+	}
+	
+	/*
+	* setUpPanel()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	* sets up the outer panel
+	*/
+	public void setUpPanel(){
+	
+	}
+	
+    /*
+	* actionPerformed()
+	*
+	* parameters: 
+	* 	ActionEvent arg0 - default args
+	* returns: 
+	* 	none
+	* 
+	* run the program when start button pressed
+	*/
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		//Start Processing
+		startProcessing();
+		
+	}
+
+    /*
+	* setParamters()
+	*
+	* parameters: 
+	* 	JFrame guiFrame - overall frame
+	*	Directory directoryPanel -  directoy panel
+	*	UserName userNamePanel - username panel
+	*	DeviceName deviceNamePanel - device name panel
+	*	DeltaTime deltaTimePanel - delta time panel
+	*	TimeDifference timeDifferencePanel- time difference panel
+	* returns: 
+	* 	none
+	* 
+	* Set all the parameters that will be needed later
+	*/
+	public void setParamters(JFrame guiFrame, Directory directoryPanel,UserName userNamePanel,DeviceName deviceNamePanel,DeltaTime deltaTimePanel,TimeDifference timeDifferencePanel) {
+		
+		//Save the parameters
+		this.guiFrame = guiFrame;
+		this.directoryPanel = directoryPanel;
+		this.userNamePanel = userNamePanel;
+		this.deviceNamePanel = deviceNamePanel;
+		this.deltaTimePanel = deltaTimePanel;
+		this.timeDifferencePanel = timeDifferencePanel;
+		
+	}
+	
+	/*
+	* startProcessing()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	* 
+	* Start the things necessary for processing
+	*/
+	public void startProcessing() {
+
+		//Get the parameters
+		String userName = userNamePanel.getUserName();
+		String deviceName = deviceNamePanel.getDeviceName();
+		String deltaTime = deltaTimePanel.getDeltaTime();
+		String timeDifference = timeDifferencePanel.getTimeDifference();
+		String directory = directoryPanel.getDirectory();
+
+		//Check for correctness
+		if (userName.length()==0){
+			JOptionPane.showMessageDialog(guiFrame, "Need a User Name");
+			curProgressLabel.setText("Parameter Error");
+			return;
+		}
+		if (deviceName.length()==0){
+			JOptionPane.showMessageDialog(guiFrame, "Need a Device Name");
+			curProgressLabel.setText("Parameter Error");
+			return;
+		}
+		if (isInteger(deltaTime)==false || Integer.parseInt(deltaTime)<0 || Integer.parseInt(deltaTime)>1440){
+			JOptionPane.showMessageDialog(guiFrame, "Delta Time needs to be an integer between 0 and 1440");
+			curProgressLabel.setText("Parameter Error");
+			return;
+		}
+		if (isInteger(timeDifference)==false){
+			JOptionPane.showMessageDialog(guiFrame, "Time Difference needs to be an integer");
+			curProgressLabel.setText("Parameter Error");
+			return;
+		}
+		if (directory.length()==0){
+			JOptionPane.showMessageDialog(guiFrame, "Need a Directory");
+			curProgressLabel.setText("Parameter Error");
+			return;
+		}
+
+		//Set the parameters
+		PhotoTagger photoTagger = new PhotoTagger();
+		photoTagger.setParameters(userName, deviceName, deltaTime, timeDifference);
+		photoTagger.setProgressLabel(curProgressLabel);
+		
+		//Start the processing
+		photoTagger.startProcessing(directory);		
+		
+	}
+	
+	/*
+	* isInteger()
+	*
+	* parameters: 
+	* 	String s - string to check
+	* returns: 
+	* 	boolean - true if it is
+	* 
+	* Check if string is an integer
+	*/
+	public static boolean isInteger(String s) {
+		
+	    //Try to parse the string
+		try { 
+	        Integer.parseInt(s); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    }
+
+	    return true;
+	    
+	}
+
+}

@@ -1,0 +1,93 @@
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.*;
+
+// Delta Time Panel for GUI
+@SuppressWarnings("serial")
+public class DeltaTime extends JPanel{
+
+	//Parts of the panel
+	JLabel deltaTimeLabel;
+	JTextField deltaTimeTextField;
+	JLabel deltaTimeUnitLabel;
+		
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	* constructor - sets up gui for this panel
+	*/
+	public DeltaTime(){
+		
+		//Set up the panel
+		setUpPanel();
+		
+	}
+	
+	/*
+	* setUpPanel()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	* sets up the outer panel
+	*/
+	public void setUpPanel(){
+		
+		//Label stating this is name text field
+		deltaTimeLabel = new JLabel("Delta Time:");
+		//Text Field
+		deltaTimeTextField = new JTextField(5);
+		//Label stating min
+		deltaTimeUnitLabel = new JLabel("min");
+
+		//Set layout
+		this.setLayout(new GridBagLayout());
+
+		//Set up layout
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		//Add to panel
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		this.add(deltaTimeLabel, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridx++;
+		this.add(deltaTimeTextField, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridx++;
+		c.gridwidth = 2;
+		this.add(deltaTimeUnitLabel, c);
+		
+	}
+	
+	/*
+	* getDeltaTime()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - delta time to use
+	* 
+	* returns the delta time 
+	*/
+	public String getDeltaTime(){
+		
+		//return the delta time
+		return deltaTimeTextField.getText();
+		
+	}
+	
+}

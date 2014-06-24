@@ -1,3 +1,7 @@
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
 import javax.swing.*;
 
 //Device Name Panel for GUI
@@ -16,17 +20,48 @@ public class DeviceName extends JPanel{
 	* returns: 
 	* 	none
 	*
-	*constructor - sets up gui for this panel
+	* constructor - sets up gui for this panel
 	*/
 	public DeviceName(){
+
+		//Set up the panel
+		setUpPanel();	
+		
+	}
+	
+	/*
+	* setUpPanel()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	* sets up the outer panel
+	*/
+	private void setUpPanel(){
+	
 		//Label stating this is name text field
 		deviceNameLabel = new JLabel("Device Name:");
 		//Text Field
 		deviceNameTextField = new JTextField(25);
 				
+		//Set layout
+		this.setLayout(new GridBagLayout());
+
+		//Set up layout
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
 		//Add to panel
-		this.add(deviceNameLabel);
-		this.add(deviceNameTextField);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		this.add(deviceNameLabel, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,0)), c);
+		c.gridx++;
+		this.add(deviceNameTextField, c);
 		
 	}
 	

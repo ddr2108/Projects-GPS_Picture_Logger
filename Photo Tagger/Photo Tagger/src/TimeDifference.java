@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -20,7 +21,7 @@ public class TimeDifference extends JPanel{
 	* returns: 
 	* 	none
 	*
-	*constructor - sets up gui for this panel
+	* constructor - sets up gui for this panel
 	*/
 	public TimeDifference(){
 		
@@ -31,11 +32,27 @@ public class TimeDifference extends JPanel{
 		//Label stating hour
 		timeDifferenceUnitLabel = new JLabel("hours");
 
-		
+		//Set layout
+		this.setLayout(new GridBagLayout());
+
+		//Set up layout
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
 		//Add to panel
-		this.add(timeDifferenceLabel);
-		this.add(timeDifferenceTextField);
-		this.add(timeDifferenceUnitLabel);
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		this.add(timeDifferenceLabel, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridx++;
+		this.add(timeDifferenceTextField, c);
+		c.gridx++;
+		this.add(Box.createRigidArea(new Dimension(5,5)), c);
+		c.gridx++;
+		c.gridwidth = 2;
+		this.add(timeDifferenceUnitLabel, c);
 		
 	}
 	
