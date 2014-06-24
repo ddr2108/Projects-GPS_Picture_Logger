@@ -9,8 +9,8 @@
 
 #import "SettingsViewController.h"
 #import "AppDelegate.h"
-#import "serverLogger.h"
-#import "localLogger.h"
+#import "ServerLogger.h"
+#import "LocalLogger.h"
 
 @interface SettingsViewController ()
 
@@ -141,7 +141,7 @@
     - (IBAction)sync:(id)sender {
         
         //Create object for local logging
-        localLogger* localLog = [[localLogger alloc] init];
+        LocalLogger* localLog = [[LocalLogger alloc] init];
         //Sync data
         bool syncSuccess = [localLog sendToServer:TRUE];
         [localLog saveOldLog];
@@ -171,12 +171,12 @@
     - (IBAction)clearHistory:(id)sender {
         
         //Create object for local logging
-        localLogger* localLog = [[localLogger alloc] init];
+        LocalLogger* localLog = [[LocalLogger alloc] init];
         //Delete Data locally
         [localLog clearHistory];
         
         //Create object for server logging
-        serverLogger* serverLog = [[serverLogger alloc] init];
+        ServerLogger* serverLog = [[ServerLogger alloc] init];
         //Delete Data at server
         BOOL clearSuccess = [serverLog clearHistory];
         
@@ -211,14 +211,14 @@
         }
         
         //Create new log file for user
-        localLogger* localLog = [[localLogger alloc] init];
+        LocalLogger* localLog = [[LocalLogger alloc] init];
         [localLog renameOldLog:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
         
         //Store into defaults
         [defaults setObject:userName forKey:@"userName"];
         
         //Try to revoer data
-        localLog = [[localLogger alloc] init];
+        localLog = [[LocalLogger alloc] init];
         [localLog recoverOldLog];
         
         //Get a new count for points
@@ -246,14 +246,14 @@
         }
         
         //Create new log file for user
-        localLogger* localLog = [[localLogger alloc] init];
+        LocalLogger* localLog = [[LocalLogger alloc] init];
         [localLog renameOldLog:[defaults objectForKey:@"userName"] forDevice:[defaults objectForKey:@"deviceName"]];
         
         //Store into defaults
         [defaults setObject:deviceName forKey:@"deviceName"];
         
         //Try to revoer data
-        localLog = [[localLogger alloc] init];
+        localLog = [[LocalLogger alloc] init];
         [localLog recoverOldLog];
         
         //Get a new count for points
@@ -385,9 +385,9 @@
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{    //Asyncronous
             
             //Data local
-            localLogger* localLog = [[localLogger alloc] init];
+            LocalLogger* localLog = [[LocalLogger alloc] init];
             //Data on server
-            serverLogger* serverLog = [[serverLogger alloc] init];
+            ServerLogger* serverLog = [[ServerLogger alloc] init];
             
             //Count total data
             int totalPoints = [localLog getNumLocations] + [serverLog getNumLocations];

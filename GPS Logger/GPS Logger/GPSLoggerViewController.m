@@ -11,8 +11,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 #import "GPSLoggerViewController.h"
-#import "serverLogger.h"
-#import "localLogger.h"
+#import "ServerLogger.h"
+#import "LocalLogger.h"
 
 
 @interface GPSLoggerViewController () <CLLocationManagerDelegate, MKMapViewDelegate>
@@ -188,14 +188,14 @@
             double coordinates[] = {newLocation.coordinate.longitude, newLocation.coordinate.latitude};
 
             //Create object for logging to server
-            serverLogger *serverLog = [[serverLogger alloc] init];
+            ServerLogger *serverLog = [[ServerLogger alloc] init];
             //Save Data
             BOOL dataInserted = [serverLog saveGPS:coordinates];
             
             //if data was inserted, try to insert other items
             if (dataInserted==TRUE){
                 //Create local logger
-                localLogger* localLog = [[localLogger alloc] init];
+                LocalLogger* localLog = [[LocalLogger alloc] init];
                 //Save Data
                 [localLog sendToServer:TRUE];
                 [localLog saveOldLog];
@@ -204,7 +204,7 @@
             //If not inserted save data locally
             if (dataInserted==FALSE){
                 //Create local logger
-                localLogger* localLog = [[localLogger alloc] init];
+                LocalLogger* localLog = [[LocalLogger alloc] init];
                 //Save Data
                 [localLog saveGPS:coordinates];
             }

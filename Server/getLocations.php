@@ -51,7 +51,7 @@ if ($daysHistory==-1){
 
 			echo $row['longitude'] . " ";
 			echo $row['latitude'] . " ";
-                	echo $dateString . " ";
+            echo $dateString . " ";
 			echo $timeString . " ";
 
 		}

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface serverLogger : NSObject
+@interface ServerLogger : NSObject
 
     - (id)init;
     - (BOOL) saveGPS: (double*)coordinates;

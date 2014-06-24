@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Deep Datta Roy. All rights reserved.
 //
 
-#import "localLogger.h"
-#import "serverLogger.h"
+#import "LocalLogger.h"
+#import "ServerLogger.h"
 
-@implementation localLogger{
+@implementation LocalLogger{
     NSUserDefaults *defaults;
     NSString* userName;
     NSString* deviceName;
@@ -197,7 +197,7 @@
         NSMutableArray* removedLogData = [[NSMutableArray alloc] init];
         
         //Create connection to server
-        serverLogger* serverLog = [[serverLogger alloc] init];
+        ServerLogger* serverLog = [[ServerLogger alloc] init];
         
         //Go through the points
         for (int i = 0; i < [self getNumLocations]; i++){

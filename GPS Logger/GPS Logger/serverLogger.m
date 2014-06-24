@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Deep Datta Roy. All rights reserved.
 //
 
-#import "serverLogger.h"
+#import "ServerLogger.h"
 
-@implementation serverLogger{
+@implementation ServerLogger{
     NSUserDefaults *defaults;
     
     NSString* userName;

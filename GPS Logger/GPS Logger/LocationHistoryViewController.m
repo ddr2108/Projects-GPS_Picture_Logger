@@ -9,8 +9,8 @@
 
 #import <MapKit/MapKit.h>
 #import "LocationHistoryViewController.h"
-#import "serverLogger.h"
-#import "localLogger.h"
+#import "ServerLogger.h"
+#import "LocalLogger.h"
 
 
 @interface LocationHistoryViewController () <MKMapViewDelegate>
@@ -104,7 +104,7 @@
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             //Create object for getting local logs
-            localLogger *localLog = [[localLogger alloc] init];
+            LocalLogger *localLog = [[LocalLogger alloc] init];
             //Get Location Data locally
             NSArray* localData = [localLog getLocations];
             
@@ -117,7 +117,7 @@
         dispatch_async( dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
             //Create object for getting server logs
-            serverLogger *serverLog = [[serverLogger alloc] init];
+            ServerLogger *serverLog = [[ServerLogger alloc] init];
             //Get Location Data from server
             NSArray* serverData = [serverLog getLocations];
             
