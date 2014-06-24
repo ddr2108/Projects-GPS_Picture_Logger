@@ -1,0 +1,55 @@
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+
+import javax.swing.*;
+
+// Delta Time Panel for GUI
+@SuppressWarnings("serial")
+public class DeltaTime extends JPanel{
+
+	//Parts of the panel
+	JLabel deltaTimeLabel;
+	JTextField deltaTimeTextField;
+		
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public DeltaTime(){
+		//Create layout
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+
+		//Label stating this is name text field
+		deltaTimeLabel = new JLabel("Time Interval:");
+		//Text Field
+		deltaTimeTextField = new JTextField(5);
+		
+		//Add to panel
+		this.add(deltaTimeLabel);
+		this.add(deltaTimeTextField);
+	}
+	
+	/*
+	* getDeltaTime()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - time interval to use
+	* 
+	* returns the time interval
+	*/
+	public String getDeltaTime(){
+		//return the name
+		return deltaTimeTextField.getText();
+	}
+	
+}

@@ -1,0 +1,89 @@
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+// Directory Panel for GUI
+@SuppressWarnings("serial")
+public class Directory extends JPanel implements ActionListener{
+
+	//Parts of the panel
+	JLabel dirLabel;
+	JLabel chosenDirLabel;
+	JButton dirButton;
+		
+	/*
+	* name()
+	* 
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	none
+	*
+	*constructor - sets up gui for this panel
+	*/
+	public Directory(){
+
+		
+		//Label asking for dir location
+		dirLabel = new JLabel("Directory Location:");
+		chosenDirLabel = new JLabel(new java.io.File(".").getAbsolutePath(););
+		dirButton = new JButton("Directory");
+		
+		//Set up parts
+		chosenDirLabel.setSize(500, 20);
+		
+		//Set up action listeners
+		dirButton.addActionListener(this);
+	
+	}
+	
+	/*
+	* getDirectory()
+	*
+	* parameters: 
+	* 	none
+	* returns: 
+	* 	String - name of directory
+	* 
+	* returns the name
+	*/
+	public String getDirectory(){
+		//return the name
+		return name;
+	}
+
+	
+	/*
+	* actionPerformed()
+	*
+	* parameters: 
+	* 	ActionEvent arg0 - default args
+	* returns: 
+	* 	none
+	* 
+	* creates and saves the chosen directory info
+	*/
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+    	
+		//Create a file chooser
+    	JFileChooser dirChooser = new JFileChooser();
+    	
+    	//Set up file chooser
+    	dirChooser.setCurrentDirectory(new java.io.File(name));
+    	dirChooser.setDialogTitle("Choose Directory");
+    	dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    	dirChooser.setAcceptAllFileFilterUsed(false);
+    	
+    	//Show the dialog box
+    	dirChooser.showOpenDialog(this);
+    	
+    	//Get the directory and save it
+    	chosenDirLabel.setText(dirChooser.getSelectedFile().getAbsolutePath(););
+    	
+	}
+	
+}

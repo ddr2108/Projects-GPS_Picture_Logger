@@ -23,11 +23,11 @@ public class DeviceName extends JPanel{
 		deviceNameLabel = new JLabel("Device Name:");
 		//Text Field
 		deviceNameTextField = new JTextField(25);
-					
 				
 		//Add to panel
 		this.add(deviceNameLabel);
 		this.add(deviceNameTextField);
+		
 	}
 	
 	/*
@@ -41,8 +41,10 @@ public class DeviceName extends JPanel{
 	* returns the device name
 	*/
 	public String getDeviceName(){
-		//return the name
+		
+		//return the device name
 		return deviceNameTextField.getText();
+		
 	}
 
 }

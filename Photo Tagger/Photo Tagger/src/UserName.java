@@ -24,10 +24,10 @@ public class UserName extends JPanel{
 		//Text Field
 		userNameTextField = new JTextField(25);
 			
-		
 		//Add to panel
 		this.add(userNameLabel);
 		this.add(userNameTextField);
+		
 	}
 	
 	/*
@@ -38,11 +38,13 @@ public class UserName extends JPanel{
 	* returns: 
 	* 	String - name of user
 	* 
-	* returns the name
+	* returns the user name
 	*/
 	public String getUserName(){
-		//return the name
+		
+		//return the user name
 		return userNameTextField.getText();
+		
 	}
 	
 }
