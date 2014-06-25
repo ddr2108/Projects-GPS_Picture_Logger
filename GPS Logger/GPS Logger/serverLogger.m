@@ -223,7 +223,7 @@
      */
     -(NSMutableURLRequest*) generateRequest: (NSString*)page forParameters: (NSArray*)parameters forData: (NSArray*)data{
         //Base URL
-        NSString *baseURL = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/GPS%%20Logger/"];
+        NSString *baseURL = [NSString stringWithFormat:@"http://deepdattaroy.com/other/projects/Services/GPS%%20Logger/"];
         //Will be request url
         NSString *URL = [baseURL stringByAppendingString:[NSString stringWithFormat:@"%@", page]];
         
