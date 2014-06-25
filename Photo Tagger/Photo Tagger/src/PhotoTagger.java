@@ -247,7 +247,7 @@ public class PhotoTagger {
     	String date = dateTime[1];
     	
     	//Generate URL
-    	String baseURL = "http://deepdattaroy.com/other/projects/GPS%20Logger/getGPS.php";
+    	String baseURL = "http://deepdattaroy.com/other/projects/Services/GPS%20Logger/getGPS.php";
     	String post = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + date + "&time=" + time + "&deltaTime=" + deltaTime;
 
     	//Talk to server

@@ -10,10 +10,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 
+import javax.swing.JLabel;
+
 import org.apache.commons.imaging.ImageReadException;
 import org.apache.commons.imaging.ImageWriteException;
 import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.common.IImageMetadata;
 import org.apache.commons.imaging.formats.jpeg.JpegImageMetadata;
 import org.apache.commons.imaging.formats.jpeg.exif.ExifRewriter;
 import org.apache.commons.imaging.formats.tiff.TiffField;
@@ -25,11 +26,12 @@ import org.apache.commons.imaging.util.IoUtils;
 
 public class PhotoTagger {
 
+	//Label for showing progress
+	JLabel curProgressLabel;
+	
 	//Parameters necessary for getting data from server
 	String userName;
 	String deviceName;
-	String time;
-	String date;
 	String deltaTime;
 	
 	//Parameters for shifting time
@@ -54,39 +56,81 @@ public class PhotoTagger {
 	* 
 	* saves the parameters needed for tagging photos
 	*/
-	public void setParameters(String time, String date, String userName, String deviceName, String deltaTime, String timeDifference){
+	public void setParameters(String userName, String deviceName, String deltaTime, String timeDifference){
 		
 		//Save the parameters
 		this.userName = userName;
 		this.deviceName = deviceName;
-		this.time = time;
-		this.date = date;
 		this.deltaTime = deltaTime;
 		this.timeDifference = timeDifference;
 		
 	}
 	
 	/*
-	* showFiles()
+	* setProgressLabel()
+	*
+	* parameters: 
+	* 	JLabel curProgressLabel - label with progress
+	* returns: 
+	* 	none
+	* 
+	* saves the progress label infor
+	*/
+	public void setProgressLabel(JLabel curProgressLabel){
+		
+		//Save the label
+		this.curProgressLabel = curProgressLabel;
+		
+	}
+	
+	/*
+	* startProcessing()
+	*
+	* parameters: 
+	* 	String directory - directory to process
+	* returns: 
+	* 	none
+	* 
+	* begin the processing of pictures
+	*/
+	public void startProcessing(String directory) {
+		
+		//Go through all the files in that directory and process those
+		File[] files = new File(directory).listFiles();
+		processFiles(files);
+
+		//Say processing is done
+		curProgressLabel.setText("Done");
+
+	}
+
+	
+	/*
+	* processFiles()
 	*
 	* parameters: 
 	* 	File[] files - set of files to examine
 	* returns: 
 	* 	none
 	* 
-	* run the program
+	* go through each file and process that file
 	*/
-	public void showFiles(File[] files) {
+	private void processFiles(File[] files) {
+		
 		//Go through all files in current directory
 	    for (File file : files) {
 	    	
 	    	//Examine files
 	        if (file.isDirectory()) {	//If the file is a directory, rerun on that directory
-	            showFiles(file.listFiles()); 
+	        	processFiles(file.listFiles()); 
 	        }else {		//if is a file
 	        	
 	        	//If it is a jpeg
             	if (file.getName().contains("JPG")){
+            		
+            		//Set progress label
+            		curProgressLabel.setText(file.getName());
+
             		//Try to add gps coordinates
 		            try {
 			            setExifGPSTag(file);		//Put gps coordinates into new file
@@ -112,31 +156,38 @@ public class PhotoTagger {
 	* 
 	* run the program
 	*/
-    public void setExifGPSTag(final File file) throws IOException, ImageReadException, ImageWriteException {
-        File tempFile = null;		//new file	
-    	OutputStream os = null;		//stream to write to file
-        boolean canThrow = false;	//throw exceptions
-        TiffOutputSet outputSet = null;
+    private void setExifGPSTag(final File file) throws IOException, ImageReadException, ImageWriteException {
+    	
+    	//Related to writing temp file with new metadata
+        File tempFile = null;	
+    	OutputStream os = null;
 
+    	//Output metadata
+    	TiffOutputSet outputMetadata = null;
+
+    	///////////////////PULL METADATA FROM IMAGE//////////////////////
+    	
         //Get metadata from picture
-        final IImageMetadata metadata = Imaging.getMetadata(file);
-        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+        final JpegImageMetadata jpegMetadata = (JpegImageMetadata) Imaging.getMetadata(file);
         
         //If there is metadata
-        if (null != jpegMetadata) {
+        if (jpegMetadata != null) {
 
         	//get the exif data
-        	final TiffImageMetadata exif = jpegMetadata.getExif();
-            if (exif != null) {
-                outputSet = exif.getOutputSet();
+        	final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
+            if (exifMetadata != null) {
+                outputMetadata = exifMetadata.getOutputSet();
             }
+            
         }
 
         //if there is no exif metadata, then return
-        if (outputSet == null) {
+        if (outputMetadata == null) {
         	return;
         }
 
+        ///////////////////GET DATA FROM SERVER/////////////////////
+        
         //Get the timestamp
         String[] dateTime = getTime(jpegMetadata);
         //Return if no timestamp
@@ -147,25 +198,26 @@ public class PhotoTagger {
         //Get coordinates
         double[] coordinates = getCoordinates(dateTime);
         //Return if no coordinates
-        if (coordinates[0] == 0 && coordinates[1] == 0){
+        if (coordinates == null){
         	return;
         }
 
         //Set coordinates
-        outputSet.setGPSInDegrees(coordinates[0], coordinates[1]);
+        outputMetadata.setGPSInDegrees(coordinates[0], coordinates[1]);
+        
+        /////////////////WRITE TO FILE////////////////////////
+
         //create new file for use as temp for recording gps
         tempFile = new File(file.getAbsolutePath() + "-2");		
+
         
         //Create a stream to write to the file
         os = new FileOutputStream(tempFile);
         os = new BufferedOutputStream(os);
-        new ExifRewriter().updateExifMetadataLossless(file, os, outputSet);
-
-        //enable exceptions
-        canThrow = true;
+        new ExifRewriter().updateExifMetadataLossless(file, os, outputMetadata);
         
         //close the stream
-        IoUtils.closeQuietly(canThrow, os);
+        IoUtils.closeQuietly(true, os);
         
         //Rename file to get original
         String originalPath = file.getAbsolutePath();
@@ -190,6 +242,10 @@ public class PhotoTagger {
     	//hold coordinates to return
     	double[] coordinates = new double[2];
     	 
+    	//Pull out time and date
+    	String time = dateTime[0];
+    	String date = dateTime[1];
+    	
     	//Generate URL
     	String baseURL = "http://deepdattaroy.com/other/projects/GPS%20Logger/getGPS.php";
     	String post = "userName=" + userName + "&deviceName=" + deviceName + "&date=" + date + "&time=" + time + "&deltaTime=" + deltaTime;
@@ -197,26 +253,28 @@ public class PhotoTagger {
     	//Talk to server
     	String response = "";
 		try {
+			
 	    	//Create connection to server
-			URL request = new URL(baseURL);
-	    	HttpURLConnection connection = (HttpURLConnection) request.openConnection();
+			URL url = new URL(baseURL);
+	    	HttpURLConnection request = (HttpURLConnection) url.openConnection();
 
 			//add request header
-	    	connection.setRequestMethod("POST");
-	    	connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-	    	connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+	    	request.setRequestMethod("POST");
+	    	request.setRequestProperty("User-Agent", "Mozilla/5.0");
+	    	request.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 	 
 			// Send post request
-	    	connection.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+	    	request.setDoOutput(true);
+			DataOutputStream wr = new DataOutputStream(request.getOutputStream());
 			wr.writeBytes(post);
 			wr.flush();
 			wr.close();
 
 			//Read Reponse
-	    	BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    	BufferedReader responseReader = new BufferedReader(new InputStreamReader(request.getInputStream()));
 	    	response = responseReader.readLine();
 	    	responseReader.close();
+	    	
 		} catch (IOException e) {
 			return null;
 		}  	
@@ -226,15 +284,14 @@ public class PhotoTagger {
       
         //No data found
     	if (coordinatesTokens.length==0){
-    		coordinates[0] = 0;
-    		coordinates[1] = 0;
-    		return coordinates;
+    		return null;
     	}
     	
-    	//Get the coordinates
+    	//Pull the coordinates
     	coordinates[0] = Double.parseDouble(coordinatesTokens[0]);
     	coordinates[1] = Double.parseDouble(coordinatesTokens[1]);
     	
+    	//Return data
     	return coordinates;
     }
     
@@ -303,7 +360,7 @@ public class PhotoTagger {
         picTime.set(Calendar.YEAR, Integer.parseInt(timestampTokens[1]));
         
         //Generate new time
-        picTime.add( Calendar.HOUR, Integer.parseInt(timeDifferencePanel.getTimeDifference()));
+        picTime.add( Calendar.HOUR, Integer.parseInt(timeDifference));
         
         //return calander
         return picTime;
