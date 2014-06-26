@@ -32,8 +32,10 @@ if ($daysHistory==-1){
 	for ($i=0; $i<$daysHistory;$i++){
 
 		//Create date
-		$day = $datePieces[1]-$i;
-		$dateString = $datePieces[0] . "-" . $day . "-" .$datePieces[2];
+        $day = $datePieces[1]-$i;
+        $modifiedDate =  $dateTokens[1] . '-'  . $dateTokens[0] . '-'  . $dateTokens[2];
+        $numDaysBack = -1*$i .' day';
+        $dateString = date('n-j-Y', strtotime($modifiedDate . $numDaysBack));
 		
 		//Get all for this user and device
 		$result = mysqli_query($con,"SELECT * FROM GPS_Data WHERE userName='$userName' AND deviceName='$deviceName' AND date='$dateString'");
